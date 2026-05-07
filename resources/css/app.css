@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        color-scheme: light;
+    }
+    .dark {
+        color-scheme: dark;
+    }
+}
+
+@layer components {
+    .app-shell {
+        @apply min-h-screen bg-gradient-to-b from-white via-white to-brand-gray/40 dark:from-brand-navy dark:via-brand-navy dark:to-black;
+    }
+    .glass-card {
+        @apply rounded-2xl border border-white/30 bg-white/70 shadow-[0_12px_40px_rgba(15,23,42,0.10)] backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:shadow-[0_12px_40px_rgba(0,0,0,0.35)];
+    }
+    .card-header {
+        @apply flex items-center justify-between gap-3 border-b border-black/5 px-5 py-4 dark:border-white/10;
+    }
+    .card-body {
+        @apply px-5 py-4;
+    }
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-navy px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-blue/20 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-brand-blue/25 focus:outline-none focus:ring-2 focus:ring-brand-gold/60 focus:ring-offset-2 dark:focus:ring-offset-brand-navy;
+    }
+    .btn-ghost {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white/70 px-4 py-2 text-sm font-semibold text-brand-navy shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10;
+    }
+    .btn-danger {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-red-600/20 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-red-600/25 focus:outline-none focus:ring-2 focus:ring-red-500/60 focus:ring-offset-2 dark:focus:ring-offset-brand-navy;
+    }
+    .badge-gold {
+        @apply inline-flex items-center rounded-full bg-brand-gold/20 px-2.5 py-1 text-xs font-semibold text-brand-navy dark:bg-brand-gold/15 dark:text-brand-gold;
+    }
+    .input {
+        @apply w-full rounded-xl border border-black/10 bg-white/70 px-3 py-2 text-sm text-brand-navy shadow-sm outline-none transition focus:border-brand-gold/70 focus:ring-2 focus:ring-brand-gold/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:border-brand-gold/50;
+    }
+    .table-modern {
+        @apply w-full overflow-hidden rounded-2xl border border-black/5 bg-white/60 dark:border-white/10 dark:bg-white/5;
+    }
+    .table-modern thead {
+        @apply bg-white/80 dark:bg-white/5;
+    }
+    .table-modern th {
+        @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-black/55 dark:text-white/60;
+    }
+    .table-modern td {
+        @apply px-4 py-3 text-sm text-brand-navy dark:text-white;
+    }
+    .table-modern tbody tr {
+        @apply border-t border-black/5 transition hover:bg-white/70 dark:border-white/10 dark:hover:bg-white/10;
+    }
+}

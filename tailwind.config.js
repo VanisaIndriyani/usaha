@@ -1,0 +1,31 @@
+import defaultTheme from 'tailwindcss/defaultTheme';
+import forms from '@tailwindcss/forms';
+
+/** @type {import('tailwindcss').Config} */
+export default {
+    darkMode: 'class',
+    content: [
+        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+        './storage/framework/views/*.php',
+        './resources/views/**/*.blade.php',
+        './node_modules/flowbite/**/*.js',
+    ],
+
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                brand: {
+                    navy: '#0F172A',
+                    blue: '#1E3A8A',
+                    gold: '#FACC15',
+                    gray: '#E5E7EB',
+                },
+            },
+        },
+    },
+
+    plugins: [forms, require('flowbite/plugin')],
+};
