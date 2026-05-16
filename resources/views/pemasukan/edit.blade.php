@@ -37,7 +37,7 @@
 
                 <div>
                     <x-input-label for="nominal" value="Nominal" />
-                    <x-text-input id="nominal" name="nominal" type="number" class="mt-1 block w-full" :value="old('nominal', $pemasukan->nominal)" min="1" required />
+                    <x-text-input id="nominal" name="nominal" type="text" inputmode="numeric" data-money class="mt-1 block w-full" :value="old('nominal', $pemasukan->nominal)" required />
                     <x-input-error class="mt-2" :messages="$errors->get('nominal')" />
                 </div>
 
@@ -55,4 +55,3 @@
         </div>
     </div>
 </x-app-layout>
-

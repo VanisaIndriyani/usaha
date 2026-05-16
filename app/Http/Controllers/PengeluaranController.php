@@ -95,6 +95,10 @@ class PengeluaranController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge([
+            'nominal' => preg_replace('/\D+/', '', (string) $request->input('nominal', '')),
+        ]);
+
         $data = $request->validate([
             'nama_pengeluaran' => ['required', 'string', 'max:255'],
             'nominal' => ['required', 'integer', 'min:1'],
@@ -144,6 +148,10 @@ class PengeluaranController extends Controller
      */
     public function update(Request $request, Pengeluaran $pengeluaran)
     {
+        $request->merge([
+            'nominal' => preg_replace('/\D+/', '', (string) $request->input('nominal', '')),
+        ]);
+
         $data = $request->validate([
             'nama_pengeluaran' => ['required', 'string', 'max:255'],
             'nominal' => ['required', 'integer', 'min:1'],

@@ -31,5 +31,10 @@ class DatabaseSeeder extends Seeder
             ['user_id' => $ownerUserB->id],
             ['name' => 'Dimas']
         );
+
+        $this->call([
+            ModalUsahaSeeder::class,
+            BarangUsahaSeeder::class,
+        ]);
     }
 }

@@ -94,6 +94,10 @@ class PemasukanController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge([
+            'nominal' => preg_replace('/\D+/', '', (string) $request->input('nominal', '')),
+        ]);
+
         $data = $request->validate([
             'tanggal' => ['required', 'date'],
             'nama_pemasukan' => ['required', 'string', 'max:255'],
@@ -143,6 +147,10 @@ class PemasukanController extends Controller
      */
     public function update(Request $request, Pemasukan $pemasukan)
     {
+        $request->merge([
+            'nominal' => preg_replace('/\D+/', '', (string) $request->input('nominal', '')),
+        ]);
+
         $data = $request->validate([
             'tanggal' => ['required', 'date'],
             'nama_pemasukan' => ['required', 'string', 'max:255'],

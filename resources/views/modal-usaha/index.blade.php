@@ -7,6 +7,12 @@
             </div>
             <div class="flex items-center gap-2">
                 <form method="GET" action="{{ route('modal-usaha.index') }}" class="flex items-center gap-2">
+                    <select name="owner_id" class="input w-44">
+                        <option value="0" @selected((int) $ownerId === 0)>Semua owner</option>
+                        @foreach ($owners as $owner)
+                            <option value="{{ $owner->id }}" @selected((int) $ownerId === (int) $owner->id)>{{ $owner->name }}</option>
+                        @endforeach
+                    </select>
                     <input name="q" value="{{ $q }}" placeholder="Cari owner / catatan..." class="input w-56" />
                     <button class="btn-ghost" type="submit">Cari</button>
                 </form>
@@ -123,4 +129,3 @@
         </div>
     </div>
 </x-app-layout>
-

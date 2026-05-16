@@ -43,4 +43,50 @@ document.addEventListener('alpine:init', () => {
     });
 });
 
+const normalizeDigits = (value) => String(value ?? '').replace(/[^\d]/g, '');
+
+const formatWithDots = (digits) => {
+    const normalized = normalizeDigits(digits);
+    if (normalized === '') return '';
+    return normalized.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
+
+const applyMoneyFormat = (input) => {
+    const formatted = formatWithDots(input.value);
+    input.value = formatted;
+};
+
+document.addEventListener('input', (e) => {
+    const input = e.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    if (!input.matches('input[data-money], input.money-input')) return;
+
+    applyMoneyFormat(input);
+    const len = input.value.length;
+    input.setSelectionRange(len, len);
+});
+
+document.addEventListener(
+    'submit',
+    (e) => {
+        const form = e.target;
+        if (!(form instanceof HTMLFormElement)) return;
+
+        const inputs = form.querySelectorAll('input[data-money], input.money-input');
+        for (const input of inputs) {
+            if (!(input instanceof HTMLInputElement)) continue;
+            input.value = normalizeDigits(input.value);
+        }
+    },
+    true
+);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const inputs = document.querySelectorAll('input[data-money], input.money-input');
+    for (const input of inputs) {
+        if (!(input instanceof HTMLInputElement)) continue;
+        applyMoneyFormat(input);
+    }
+});
+
 Alpine.start();

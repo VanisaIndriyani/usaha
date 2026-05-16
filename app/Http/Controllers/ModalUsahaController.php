@@ -17,12 +17,16 @@ class ModalUsahaController extends Controller
     public function index(Request $request): View
     {
         $q = (string) $request->query('q', '');
+        $ownerId = (int) $request->query('owner_id', 0);
 
         $modal = ModalUsaha::query()
             ->with('owner')
+            ->when($ownerId > 0, fn ($query) => $query->where('owner_id', $ownerId))
             ->when($q !== '', function ($query) use ($q) {
-                $query->whereHas('owner', fn ($o) => $o->where('name', 'like', "%{$q}%"))
-                    ->orWhere('catatan', 'like', "%{$q}%");
+                $query->where(function ($sub) use ($q) {
+                    $sub->whereHas('owner', fn ($o) => $o->where('name', 'like', "%{$q}%"))
+                        ->orWhere('catatan', 'like', "%{$q}%");
+                });
             })
             ->latest('tanggal')
             ->paginate(12)
@@ -50,6 +54,7 @@ class ModalUsahaController extends Controller
             'totalAll' => $totalAll,
             'percent' => $percent,
             'q' => $q,
+            'ownerId' => $ownerId,
         ]);
     }
 
@@ -68,6 +73,10 @@ class ModalUsahaController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge([
+            'nominal' => preg_replace('/\D+/', '', (string) $request->input('nominal', '')),
+        ]);
+
         $data = $request->validate([
             'owner_id' => ['required', 'exists:owners,id'],
             'nominal' => ['required', 'integer', 'min:1'],
@@ -117,6 +126,10 @@ class ModalUsahaController extends Controller
      */
     public function update(Request $request, ModalUsaha $modalUsaha)
     {
+        $request->merge([
+            'nominal' => preg_replace('/\D+/', '', (string) $request->input('nominal', '')),
+        ]);
+
         $data = $request->validate([
             'owner_id' => ['required', 'exists:owners,id'],
             'nominal' => ['required', 'integer', 'min:1'],
