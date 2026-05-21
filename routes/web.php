@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BarangUsahaController;
+use App\Http\Controllers\CatatanStokController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\GajiController;
@@ -27,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('modal-usaha', ModalUsahaController::class)->names('modal-usaha');
     Route::resource('barang-usaha', BarangUsahaController::class)->names('barang-usaha');
+    Route::resource('catatan-stok', CatatanStokController::class)->names('catatan-stok');
     Route::resource('pemasukan', PemasukanController::class)->names('pemasukan');
     Route::resource('pengeluaran', PengeluaranController::class)->names('pengeluaran');
     Route::resource('karyawan', KaryawanController::class)->names('karyawan');

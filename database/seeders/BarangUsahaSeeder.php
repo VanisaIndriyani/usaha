@@ -38,6 +38,15 @@ class BarangUsahaSeeder extends Seeder
             ['id' => 24, 'nama_barang' => 'Isi printer', 'kategori' => 'Perintilan lainnya', 'harga' => 38000, 'jumlah' => 1, 'supplier' => 'Shopee', 'tanggal_beli' => '2026-05-16', 'catatan' => 'isi printer di shopee', 'created_at' => '2026-05-16 02:50:06', 'updated_at' => '2026-05-16 02:50:06'],
             ['id' => 25, 'nama_barang' => 'Serokan', 'kategori' => 'Peralatan', 'harga' => 7000, 'jumlah' => 1, 'supplier' => null, 'tanggal_beli' => '2026-05-16', 'catatan' => 'belii serokann', 'created_at' => '2026-05-16 02:50:32', 'updated_at' => '2026-05-16 02:50:32'],
             ['id' => 26, 'nama_barang' => 'Laci kasir', 'kategori' => 'Furniture', 'harga' => 29000, 'jumlah' => 1, 'supplier' => null, 'tanggal_beli' => '2026-05-16', 'catatan' => 'belii lacii kasir', 'created_at' => '2026-05-16 02:51:34', 'updated_at' => '2026-05-16 02:51:34'],
+            ['id' => 27, 'nama_barang' => 'Hiasan dinding', 'kategori' => 'Perintilan lainnya', 'harga' => 49000, 'jumlah' => 1, 'supplier' => 'TikTok', 'tanggal_beli' => '2026-05-16', 'catatan' => 'BAYAR HIASANGAN DINGDING TIKTOK', 'created_at' => '2026-05-16 16:13:59', 'updated_at' => '2026-05-16 16:13:59'],
+            ['id' => 28, 'nama_barang' => 'Kotak sampah', 'kategori' => 'Perintilan lainnya', 'harga' => 15500, 'jumlah' => 1, 'supplier' => 'Shopee', 'tanggal_beli' => '2026-05-16', 'catatan' => 'KOTAK SAMPAH SHOPEE', 'created_at' => '2026-05-16 16:14:54', 'updated_at' => '2026-05-16 16:14:54'],
+            ['id' => 29, 'nama_barang' => 'Meja + kipas + belanja Pamela', 'kategori' => 'Perintilan lainnya', 'harga' => 463500, 'jumlah' => 1, 'supplier' => 'Pamela', 'tanggal_beli' => '2026-05-16', 'catatan' => 'meja 120+ kipas 150 + belanja pamela 193500', 'created_at' => '2026-05-16 22:54:20', 'updated_at' => '2026-05-16 22:54:20'],
+            ['id' => 30, 'nama_barang' => 'Bubuk creamer', 'kategori' => 'Bahan baku', 'harga' => 34500, 'jumlah' => 1, 'supplier' => 'TikTok', 'tanggal_beli' => '2026-05-17', 'catatan' => 'bayar cod bubuk cremer di tiktok', 'created_at' => '2026-05-17 21:47:08', 'updated_at' => '2026-05-17 21:47:08'],
+            ['id' => 31, 'nama_barang' => 'Cap stempel gelas', 'kategori' => 'Perintilan lainnya', 'harga' => 52500, 'jumlah' => 1, 'supplier' => 'Shopee', 'tanggal_beli' => '2026-05-17', 'catatan' => 'cap stampell gelasdi shopee', 'created_at' => '2026-05-17 21:54:33', 'updated_at' => '2026-05-17 21:54:33'],
+            ['id' => 32, 'nama_barang' => 'Paku + doubletip', 'kategori' => 'Perintilan lainnya', 'harga' => 15000, 'jumlah' => 1, 'supplier' => null, 'tanggal_beli' => '2026-05-19', 'catatan' => 'beli paku sama doubeltip', 'created_at' => '2026-05-19 20:32:03', 'updated_at' => '2026-05-19 20:32:03'],
+            ['id' => 33, 'nama_barang' => 'Cetak banner', 'kategori' => 'Perintilan lainnya', 'harga' => 88000, 'jumlah' => 1, 'supplier' => null, 'tanggal_beli' => '2026-05-19', 'catatan' => 'cetak banner', 'created_at' => '2026-05-19 20:32:56', 'updated_at' => '2026-05-19 20:32:56'],
+            ['id' => 34, 'nama_barang' => 'Keranjang buah', 'kategori' => 'Perintilan lainnya', 'harga' => 10000, 'jumlah' => 1, 'supplier' => null, 'tanggal_beli' => '2026-05-19', 'catatan' => 'beli keranjang buah', 'created_at' => '2026-05-19 20:33:12', 'updated_at' => '2026-05-19 20:33:12'],
+            ['id' => 35, 'nama_barang' => 'Belanja bahan (gula, teh, susu)', 'kategori' => 'Bahan baku', 'harga' => 325000, 'jumlah' => 1, 'supplier' => 'Pamela', 'tanggal_beli' => '2026-05-20', 'catatan' => 'pamela gula teh susu', 'created_at' => '2026-05-20 13:03:18', 'updated_at' => '2026-05-20 13:03:18'],
         ];
 
         $payload = collect($rows)->map(function (array $row) use ($creator) {
@@ -64,4 +73,3 @@ class BarangUsahaSeeder extends Seeder
         );
     }
 }
-
