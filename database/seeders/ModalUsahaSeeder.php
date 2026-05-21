@@ -20,6 +20,8 @@ class ModalUsahaSeeder extends Seeder
         }
 
         $rows = [
+            ['id' => 3, 'owner_ref' => 'A', 'nominal' => 4523860, 'tanggal' => '2026-05-01', 'catatan' => 'Modal awal (dibagi 2 dari 8.447.720 + 600.000)', 'created_at' => '2026-05-01 00:00:00', 'updated_at' => '2026-05-01 00:00:00'],
+            ['id' => 27, 'owner_ref' => 'B', 'nominal' => 4523860, 'tanggal' => '2026-05-01', 'catatan' => 'Modal awal (dibagi 2 dari 8.447.720 + 600.000)', 'created_at' => '2026-05-01 00:00:00', 'updated_at' => '2026-05-01 00:00:00'],
             ['id' => 1, 'owner_ref' => 'A', 'nominal' => 3000000, 'tanggal' => '2026-05-08', 'catatan' => 'nyewa ruko', 'created_at' => '2026-05-08 16:31:38', 'updated_at' => '2026-05-12 06:36:47'],
             ['id' => 2, 'owner_ref' => 'A', 'nominal' => 241850, 'tanggal' => '2026-05-08', 'catatan' => 'beli printer di shopee', 'created_at' => '2026-05-08 16:32:38', 'updated_at' => '2026-05-08 16:32:38'],
             ['id' => 4, 'owner_ref' => 'A', 'nominal' => 37100, 'tanggal' => '2026-05-09', 'catatan' => 'beli stiker di shopee', 'created_at' => '2026-05-09 15:17:53', 'updated_at' => '2026-05-09 15:17:53'],
@@ -69,4 +71,3 @@ class ModalUsahaSeeder extends Seeder
         );
     }
 }
-
