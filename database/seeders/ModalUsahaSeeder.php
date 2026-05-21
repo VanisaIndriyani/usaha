@@ -20,8 +20,8 @@ class ModalUsahaSeeder extends Seeder
         }
 
         $rows = [
-            ['id' => 3, 'owner_ref' => 'A', 'nominal' => 4523860, 'tanggal' => '2026-05-01', 'catatan' => 'Modal awal (dibagi 2 dari 8.447.720 + 600.000)', 'created_at' => '2026-05-01 00:00:00', 'updated_at' => '2026-05-01 00:00:00'],
-            ['id' => 27, 'owner_ref' => 'B', 'nominal' => 4523860, 'tanggal' => '2026-05-01', 'catatan' => 'Modal awal (dibagi 2 dari 8.447.720 + 600.000)', 'created_at' => '2026-05-01 00:00:00', 'updated_at' => '2026-05-01 00:00:00'],
+            ['id' => 1000, 'owner_ref' => 'A', 'nominal' => 4523860, 'tanggal' => '2026-05-01', 'catatan' => 'Modal awal (dibagi 2 dari 8.447.720 + 600.000)', 'created_at' => '2026-05-01 00:00:00', 'updated_at' => '2026-05-01 00:00:00'],
+            ['id' => 1001, 'owner_ref' => 'B', 'nominal' => 4523860, 'tanggal' => '2026-05-01', 'catatan' => 'Modal awal (dibagi 2 dari 8.447.720 + 600.000)', 'created_at' => '2026-05-01 00:00:00', 'updated_at' => '2026-05-01 00:00:00'],
             ['id' => 1, 'owner_ref' => 'A', 'nominal' => 3000000, 'tanggal' => '2026-05-08', 'catatan' => 'nyewa ruko', 'created_at' => '2026-05-08 16:31:38', 'updated_at' => '2026-05-12 06:36:47'],
             ['id' => 2, 'owner_ref' => 'A', 'nominal' => 241850, 'tanggal' => '2026-05-08', 'catatan' => 'beli printer di shopee', 'created_at' => '2026-05-08 16:32:38', 'updated_at' => '2026-05-08 16:32:38'],
             ['id' => 4, 'owner_ref' => 'A', 'nominal' => 37100, 'tanggal' => '2026-05-09', 'catatan' => 'beli stiker di shopee', 'created_at' => '2026-05-09 15:17:53', 'updated_at' => '2026-05-09 15:17:53'],
@@ -47,6 +47,15 @@ class ModalUsahaSeeder extends Seeder
             ['id' => 24, 'owner_ref' => 'A', 'nominal' => 38000, 'tanggal' => '2026-05-16', 'catatan' => 'isi printer di shopee', 'created_at' => '2026-05-16 02:50:06', 'updated_at' => '2026-05-16 02:50:06'],
             ['id' => 25, 'owner_ref' => 'A', 'nominal' => 7000, 'tanggal' => '2026-05-16', 'catatan' => 'belii serokann', 'created_at' => '2026-05-16 02:50:32', 'updated_at' => '2026-05-16 02:50:32'],
             ['id' => 26, 'owner_ref' => 'A', 'nominal' => 29000, 'tanggal' => '2026-05-16', 'catatan' => 'belii lacii kasir', 'created_at' => '2026-05-16 02:51:34', 'updated_at' => '2026-05-16 02:51:34'],
+            ['id' => 27, 'owner_ref' => 'A', 'nominal' => 49000, 'tanggal' => '2026-05-16', 'catatan' => 'BAYAR HIASANGAN DINGDING TIKTOK', 'created_at' => '2026-05-16 16:13:59', 'updated_at' => '2026-05-16 16:13:59'],
+            ['id' => 28, 'owner_ref' => 'A', 'nominal' => 15500, 'tanggal' => '2026-05-16', 'catatan' => 'KOTAK SAMPAH SHOPEE', 'created_at' => '2026-05-16 16:14:54', 'updated_at' => '2026-05-16 16:14:54'],
+            ['id' => 29, 'owner_ref' => 'A', 'nominal' => 463500, 'tanggal' => '2026-05-16', 'catatan' => 'meja 120+ kipas 150 + belanja pamela 193500', 'created_at' => '2026-05-16 22:54:20', 'updated_at' => '2026-05-16 22:54:20'],
+            ['id' => 30, 'owner_ref' => 'A', 'nominal' => 34500, 'tanggal' => '2026-05-17', 'catatan' => 'bayar cod bubuk cremer di tiktok', 'created_at' => '2026-05-17 21:47:08', 'updated_at' => '2026-05-17 21:47:08'],
+            ['id' => 31, 'owner_ref' => 'A', 'nominal' => 52500, 'tanggal' => '2026-05-17', 'catatan' => 'cap stampell gelasdi shopee', 'created_at' => '2026-05-17 21:54:33', 'updated_at' => '2026-05-17 21:54:33'],
+            ['id' => 32, 'owner_ref' => 'A', 'nominal' => 15000, 'tanggal' => '2026-05-19', 'catatan' => 'beli paku sama doubeltip', 'created_at' => '2026-05-19 20:32:03', 'updated_at' => '2026-05-19 20:32:03'],
+            ['id' => 33, 'owner_ref' => 'A', 'nominal' => 88000, 'tanggal' => '2026-05-19', 'catatan' => 'cetak banner', 'created_at' => '2026-05-19 20:32:56', 'updated_at' => '2026-05-19 20:32:56'],
+            ['id' => 34, 'owner_ref' => 'A', 'nominal' => 10000, 'tanggal' => '2026-05-19', 'catatan' => 'beli keranjang buah', 'created_at' => '2026-05-19 20:33:12', 'updated_at' => '2026-05-19 20:33:12'],
+            ['id' => 35, 'owner_ref' => 'A', 'nominal' => 325000, 'tanggal' => '2026-05-20', 'catatan' => 'pamela gula teh susu', 'created_at' => '2026-05-20 13:03:18', 'updated_at' => '2026-05-20 13:03:18'],
         ];
 
         $payload = collect($rows)->map(function (array $row) use ($creator, $ownerA, $ownerB) {
