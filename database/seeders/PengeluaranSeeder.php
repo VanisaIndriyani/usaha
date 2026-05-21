@@ -50,6 +50,8 @@ class PengeluaranSeeder extends Seeder
             ['id' => 33, 'nama_pengeluaran' => 'Cetak banner', 'nominal' => 88000, 'kategori' => 'Operasional', 'tanggal' => '2026-05-19', 'catatan' => 'cetak banner', 'created_at' => '2026-05-19 20:32:56', 'updated_at' => '2026-05-19 20:32:56'],
             ['id' => 34, 'nama_pengeluaran' => 'Keranjang buah', 'nominal' => 10000, 'kategori' => 'Operasional', 'tanggal' => '2026-05-19', 'catatan' => 'beli keranjang buah', 'created_at' => '2026-05-19 20:33:12', 'updated_at' => '2026-05-19 20:33:12'],
             ['id' => 35, 'nama_pengeluaran' => 'Belanja bahan (gula, teh, susu)', 'nominal' => 325000, 'kategori' => 'Bahan baku', 'tanggal' => '2026-05-20', 'catatan' => 'pamela gula teh susu', 'created_at' => '2026-05-20 13:03:18', 'updated_at' => '2026-05-20 13:03:18'],
+            ['id' => 36, 'nama_pengeluaran' => 'Nangka', 'nominal' => 70000, 'kategori' => 'Bahan baku', 'tanggal' => '2026-05-21', 'catatan' => 'beli nangka', 'created_at' => '2026-05-21 00:00:00', 'updated_at' => '2026-05-21 00:00:00'],
+            ['id' => 37, 'nama_pengeluaran' => 'Baskom', 'nominal' => 20000, 'kategori' => 'Operasional', 'tanggal' => '2026-05-21', 'catatan' => 'beli baskom di mirota', 'created_at' => '2026-05-21 00:00:00', 'updated_at' => '2026-05-21 00:00:00'],
         ];
 
         $payload = collect($rows)->map(function (array $row) use ($creator) {
