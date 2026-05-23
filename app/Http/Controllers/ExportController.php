@@ -45,12 +45,11 @@ class ExportController extends Controller
             ->get();
 
         return Excel::download($this->simpleExport(
-            headings: ['Tanggal', 'Nama', 'Nominal', 'Metode', 'Catatan'],
+            headings: ['Tanggal', 'Nama', 'Nominal', 'Catatan'],
             rows: $rows->map(fn ($r) => [
                 $r->tanggal?->toDateString(),
                 $r->nama_pemasukan,
                 (int) $r->nominal,
-                $r->metode_pembayaran,
                 $r->catatan,
             ])
         ), "laporan-pemasukan-{$start}-{$end}.xlsx");

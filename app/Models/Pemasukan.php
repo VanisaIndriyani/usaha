@@ -13,7 +13,6 @@ class Pemasukan extends Model
         'tanggal',
         'nama_pemasukan',
         'nominal',
-        'metode_pembayaran',
         'catatan',
         'bukti_path',
         'created_by',

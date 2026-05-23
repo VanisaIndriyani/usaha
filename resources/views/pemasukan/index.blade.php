@@ -80,7 +80,6 @@
                         <tr>
                             <th>Tanggal</th>
                             <th>Nama</th>
-                            <th>Metode</th>
                             <th>Nominal</th>
                             <th>Bukti</th>
                             <th>Catatan</th>
@@ -92,7 +91,6 @@
                             <tr>
                                 <td>{{ $row->tanggal?->format('d M Y') }}</td>
                                 <td class="font-bold">{{ $row->nama_pemasukan }}</td>
-                                <td><span class="badge-gold">{{ $row->metode_pembayaran }}</span></td>
                                 <td class="font-bold text-brand-blue dark:text-brand-gold">{{ $idr((int) $row->nominal) }}</td>
                                 <td>
                                     @if ($row->bukti_path)
@@ -119,7 +117,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-4 py-10 text-center text-sm text-black/50 dark:text-white/60">
+                                <td colspan="6" class="px-4 py-10 text-center text-sm text-black/50 dark:text-white/60">
                                     Belum ada data pemasukan.
                                 </td>
                             </tr>

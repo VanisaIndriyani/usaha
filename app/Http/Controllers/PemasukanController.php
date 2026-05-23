@@ -12,14 +12,6 @@ use Illuminate\View\View;
 
 class PemasukanController extends Controller
 {
-    private const METODE = [
-        'Cash',
-        'Transfer',
-        'QRIS',
-        'E-Wallet',
-        'Lainnya',
-    ];
-
     /**
      * Display a listing of the resource.
      */
@@ -32,7 +24,6 @@ class PemasukanController extends Controller
         $query = Pemasukan::query()
             ->when($q !== '', function ($qBuilder) use ($q) {
                 $qBuilder->where('nama_pemasukan', 'like', "%{$q}%")
-                    ->orWhere('metode_pembayaran', 'like', "%{$q}%")
                     ->orWhere('catatan', 'like', "%{$q}%");
             })
             ->when($start, fn ($qb) => $qb->whereDate('tanggal', '>=', $start))
@@ -85,9 +76,7 @@ class PemasukanController extends Controller
      */
     public function create(): View
     {
-        return view('pemasukan.create', [
-            'metodeList' => self::METODE,
-        ]);
+        return view('pemasukan.create');
     }
 
     /**
@@ -103,7 +92,6 @@ class PemasukanController extends Controller
             'tanggal' => ['required', 'date'],
             'nama_pemasukan' => ['required', 'string', 'max:255'],
             'nominal' => ['required', 'integer', 'min:1'],
-            'metode_pembayaran' => ['required', 'string', 'in:'.implode(',', self::METODE)],
             'catatan' => ['nullable', 'string'],
             'bukti' => ['nullable', 'image', 'max:4096'],
         ]);
@@ -172,7 +160,6 @@ class PemasukanController extends Controller
     {
         return view('pemasukan.edit', [
             'pemasukan' => $pemasukan,
-            'metodeList' => self::METODE,
         ]);
     }
 
@@ -189,7 +176,6 @@ class PemasukanController extends Controller
             'tanggal' => ['required', 'date'],
             'nama_pemasukan' => ['required', 'string', 'max:255'],
             'nominal' => ['required', 'integer', 'min:1'],
-            'metode_pembayaran' => ['required', 'string', 'in:'.implode(',', self::METODE)],
             'catatan' => ['nullable', 'string'],
             'bukti' => ['nullable', 'image', 'max:4096'],
         ]);

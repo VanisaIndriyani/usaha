@@ -70,7 +70,6 @@
                 <tr>
                     <th style="width: 92px;">Tanggal</th>
                     <th>Nama</th>
-                    <th style="width: 100px;">Metode</th>
                     <th style="width: 120px;" class="right">Nominal</th>
                     <th>Catatan</th>
                 </tr>
@@ -80,13 +79,12 @@
                     <tr>
                         <td>{{ $r->tanggal?->toDateString() }}</td>
                         <td>{{ $r->nama_pemasukan }}</td>
-                        <td>{{ $r->metode_pembayaran }}</td>
                         <td class="right">{{ $idr((int) $r->nominal) }}</td>
                         <td>{{ $r->catatan }}</td>
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="3" class="right" style="font-weight: 900; background: #F8FAFC;">Total</td>
+                    <td colspan="2" class="right" style="font-weight: 900; background: #F8FAFC;">Total</td>
                     <td class="right" style="font-weight: 900; background: #F8FAFC;">{{ $idr($total) }}</td>
                     <td style="background: #F8FAFC;"></td>
                 </tr>

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->date('tanggal');
             $table->string('nama_pemasukan');
             $table->unsignedBigInteger('nominal');
-            $table->string('metode_pembayaran');
             $table->text('catatan')->nullable();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();

@@ -18,15 +18,6 @@
                         <x-text-input id="tanggal" name="tanggal" type="date" class="mt-1 block w-full" :value="old('tanggal', $pemasukan->tanggal?->toDateString())" required />
                         <x-input-error class="mt-2" :messages="$errors->get('tanggal')" />
                     </div>
-                    <div>
-                        <x-input-label for="metode_pembayaran" value="Metode Pembayaran" />
-                        <select id="metode_pembayaran" name="metode_pembayaran" class="input mt-1">
-                            @foreach ($metodeList as $m)
-                                <option value="{{ $m }}" @selected(old('metode_pembayaran', $pemasukan->metode_pembayaran) === $m)>{{ $m }}</option>
-                            @endforeach
-                        </select>
-                        <x-input-error class="mt-2" :messages="$errors->get('metode_pembayaran')" />
-                    </div>
                 </div>
 
                 <div>
