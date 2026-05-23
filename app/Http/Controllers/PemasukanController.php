@@ -7,6 +7,7 @@ use App\Models\Pemasukan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PemasukanController extends Controller
@@ -104,9 +105,42 @@ class PemasukanController extends Controller
             'nominal' => ['required', 'integer', 'min:1'],
             'metode_pembayaran' => ['required', 'string', 'in:'.implode(',', self::METODE)],
             'catatan' => ['nullable', 'string'],
+            'bukti' => ['nullable', 'image', 'max:4096'],
         ]);
 
         $data['created_by'] = Auth::id();
+        $existing = Pemasukan::query()
+            ->whereDate('tanggal', $data['tanggal'])
+            ->first();
+
+        if ($request->hasFile('bukti')) {
+            $data['bukti_path'] = $request->file('bukti')->store('pemasukan', 'public');
+        }
+
+        unset($data['bukti']);
+
+        if ($existing) {
+            if (isset($data['bukti_path']) && $existing->bukti_path) {
+                Storage::disk('public')->delete($existing->bukti_path);
+            }
+
+            $existing->update($data);
+            $pemasukan = $existing;
+
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'Update pemasukan',
+                'subject_type' => Pemasukan::class,
+                'subject_id' => $pemasukan->id,
+                'meta' => ['nama_pemasukan' => $pemasukan->nama_pemasukan, 'nominal' => (int) $pemasukan->nominal],
+                'ip_address' => $request->ip(),
+            ]);
+
+            return redirect()
+                ->route('pemasukan.index')
+                ->with('toast', ['type' => 'success', 'message' => 'Pemasukan untuk tanggal ini sudah ada, jadi datanya diperbarui.']);
+        }
+
         $pemasukan = Pemasukan::create($data);
 
         ActivityLog::create([
@@ -157,9 +191,29 @@ class PemasukanController extends Controller
             'nominal' => ['required', 'integer', 'min:1'],
             'metode_pembayaran' => ['required', 'string', 'in:'.implode(',', self::METODE)],
             'catatan' => ['nullable', 'string'],
+            'bukti' => ['nullable', 'image', 'max:4096'],
         ]);
 
-        $pemasukan->update($data);
+        $existing = Pemasukan::query()
+            ->whereDate('tanggal', $data['tanggal'])
+            ->whereKeyNot($pemasukan->id)
+            ->first();
+
+        if ($existing) {
+            return redirect()
+                ->route('pemasukan.edit', $existing)
+                ->with('toast', ['type' => 'info', 'message' => 'Tanggal ini sudah punya pemasukan. Silakan edit data yang sudah ada.']);
+        }
+
+        if ($request->hasFile('bukti')) {
+            $path = $request->file('bukti')->store('pemasukan', 'public');
+            if ($pemasukan->bukti_path) {
+                Storage::disk('public')->delete($pemasukan->bukti_path);
+            }
+            $data['bukti_path'] = $path;
+        }
+
+        $pemasukan->update(collect($data)->except('bukti')->all());
 
         ActivityLog::create([
             'user_id' => Auth::id(),
@@ -181,6 +235,9 @@ class PemasukanController extends Controller
     public function destroy(Pemasukan $pemasukan)
     {
         $id = $pemasukan->id;
+        if ($pemasukan->bukti_path) {
+            Storage::disk('public')->delete($pemasukan->bukti_path);
+        }
         $pemasukan->delete();
 
         ActivityLog::create([

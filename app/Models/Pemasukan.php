@@ -15,6 +15,7 @@ class Pemasukan extends Model
         'nominal',
         'metode_pembayaran',
         'catatan',
+        'bukti_path',
         'created_by',
     ];
 
