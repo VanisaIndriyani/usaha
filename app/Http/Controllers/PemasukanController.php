@@ -97,15 +97,6 @@ class PemasukanController extends Controller
         ]);
 
         $data['created_by'] = Auth::id();
-        $existing = Pemasukan::query()
-            ->whereDate('tanggal', $data['tanggal'])
-            ->first();
-
-        if ($existing) {
-            return redirect()
-                ->route('pemasukan.edit', $existing)
-                ->with('toast', ['type' => 'info', 'message' => 'Tanggal ini sudah punya pemasukan. Silakan edit data yang sudah ada.']);
-        }
 
         if ($request->hasFile('bukti')) {
             $data['bukti_path'] = $request->file('bukti')->store('pemasukan', 'public');
@@ -163,17 +154,6 @@ class PemasukanController extends Controller
             'catatan' => ['nullable', 'string'],
             'bukti' => ['nullable', 'image', 'max:4096'],
         ]);
-
-        $existing = Pemasukan::query()
-            ->whereDate('tanggal', $data['tanggal'])
-            ->whereKeyNot($pemasukan->id)
-            ->first();
-
-        if ($existing) {
-            return redirect()
-                ->route('pemasukan.edit', $existing)
-                ->with('toast', ['type' => 'info', 'message' => 'Tanggal ini sudah punya pemasukan. Silakan edit data yang sudah ada.']);
-        }
 
         if ($request->hasFile('bukti')) {
             $path = $request->file('bukti')->store('pemasukan', 'public');
