@@ -19,7 +19,47 @@ class ModalUsahaSeeder extends Seeder
             return;
         }
 
-        DB::table('modal_usaha')->whereIn('id', range(1, 35))->delete();
+        $badCatatan = [
+            'nyewa ruko',
+            'beli printer di shopee',
+            'beli stiker di shopee',
+            'beli hp +kartu + cas an',
+            'beli semprotan di shopee',
+            'beli di progo',
+            'beli plastik di enam puluh',
+            'beli di tanjakannn tinwall',
+            'DP ETLASE',
+            'belii cat tembok',
+            'METRO KAMPUS',
+            'BAYAR ETALASE',
+            'BAYAR COD SEROKAN ES BELI DI TT',
+            'beli kulkas',
+            'ongkir lalamove',
+            'BELI MIXER DI TIKTOK',
+            'botoll shakkk di tiktok',
+            'standingg kayuu tiktok',
+            'box ager',
+            'BAYARRR QRIS',
+            'BELI MEJA',
+            'isi cupsiler di shopee',
+            'isi printer di shopee',
+            'belii serokann',
+            'belii lacii kasir',
+            'BAYAR HIASANGAN DINGDING TIKTOK',
+            'KOTAK SAMPAH SHOPEE',
+            'meja 120+ kipas 150 + belanja pamela 193500',
+            'bayar cod bubuk cremer di tiktok',
+            'cap stampell gelasdi shopee',
+            'beli paku sama doubeltip',
+            'cetak banner',
+            'beli keranjang buah',
+            'pamela gula teh susu',
+        ];
+
+        DB::table('modal_usaha')
+            ->whereBetween('tanggal', ['2026-05-01', '2026-05-31'])
+            ->whereIn('catatan', $badCatatan)
+            ->delete();
 
         $rows = [
             ['id' => 1000, 'owner_ref' => 'A', 'nominal' => 4523860, 'tanggal' => '2026-05-01', 'catatan' => 'Modal awal (dibagi 2 dari 8.447.720 + 600.000)', 'created_at' => '2026-05-01 00:00:00', 'updated_at' => '2026-05-01 00:00:00'],
