@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
-use App\Models\BarangUsaha;
 use App\Models\Gaji;
 use App\Models\Karyawan;
 use App\Models\ModalUsaha;
@@ -11,7 +10,6 @@ use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -20,15 +18,15 @@ class DashboardController extends Controller
     {
         $year = (int) ($request->integer('year') ?: now()->year);
 
-        $totalModal = (int) ModalUsaha::query()->sum('nominal');
-        $totalPemasukan = (int) Pemasukan::query()->sum('nominal');
-        $totalPengeluaranManual = (int) Pengeluaran::query()->sum('nominal');
-        $totalPengeluaranBarang = (int) BarangUsaha::query()
-            ->selectRaw('COALESCE(SUM(harga * jumlah), 0) as total')
-            ->value('total');
-        $totalGajiDibayar = (int) Gaji::query()->where('status', 'dibayar')->sum('nominal');
+        $totalModal = (int) ModalUsaha::query()->whereYear('tanggal', $year)->sum('nominal');
+        $totalPemasukan = (int) Pemasukan::query()->whereYear('tanggal', $year)->sum('nominal');
+        $totalPengeluaranManual = (int) Pengeluaran::query()->whereYear('tanggal', $year)->sum('nominal');
+        $totalGajiDibayar = (int) Gaji::query()
+            ->where('status', 'dibayar')
+            ->whereYear('tanggal_bayar', $year)
+            ->sum('nominal');
 
-        $totalPengeluaran = $totalPengeluaranManual + $totalPengeluaranBarang + $totalGajiDibayar;
+        $totalPengeluaran = $totalPengeluaranManual + $totalGajiDibayar;
         $totalKeuntungan = $totalPemasukan - $totalPengeluaran;
         $saldoAkhir = $totalModal + $totalPemasukan - $totalPengeluaran;
 
@@ -36,18 +34,12 @@ class DashboardController extends Controller
 
         $monthlyIncome = $this->monthlySum(Pemasukan::query(), 'tanggal', 'nominal', $year);
         $monthlyExpenseManual = $this->monthlySum(Pengeluaran::query(), 'tanggal', 'nominal', $year);
-        $monthlyExpenseBarang = $this->monthlySumRaw(
-            BarangUsaha::query(),
-            'tanggal_beli',
-            'harga * jumlah',
-            $year
-        );
         $monthlyExpenseGaji = $this->monthlySum(Gaji::query()->where('status', 'dibayar'), 'tanggal_bayar', 'nominal', $year);
 
         $monthlyExpenseTotal = [];
         $monthlyProfit = [];
         for ($m = 1; $m <= 12; $m++) {
-            $expense = ($monthlyExpenseManual[$m] ?? 0) + ($monthlyExpenseBarang[$m] ?? 0) + ($monthlyExpenseGaji[$m] ?? 0);
+            $expense = ($monthlyExpenseManual[$m] ?? 0) + ($monthlyExpenseGaji[$m] ?? 0);
             $monthlyExpenseTotal[$m] = $expense;
             $monthlyProfit[$m] = ($monthlyIncome[$m] ?? 0) - $expense;
         }
