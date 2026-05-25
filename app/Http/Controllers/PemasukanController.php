@@ -101,33 +101,17 @@ class PemasukanController extends Controller
             ->whereDate('tanggal', $data['tanggal'])
             ->first();
 
+        if ($existing) {
+            return redirect()
+                ->route('pemasukan.edit', $existing)
+                ->with('toast', ['type' => 'info', 'message' => 'Tanggal ini sudah punya pemasukan. Silakan edit data yang sudah ada.']);
+        }
+
         if ($request->hasFile('bukti')) {
             $data['bukti_path'] = $request->file('bukti')->store('pemasukan', 'public');
         }
 
         unset($data['bukti']);
-
-        if ($existing) {
-            if (isset($data['bukti_path']) && $existing->bukti_path) {
-                Storage::disk('public')->delete($existing->bukti_path);
-            }
-
-            $existing->update($data);
-            $pemasukan = $existing;
-
-            ActivityLog::create([
-                'user_id' => Auth::id(),
-                'action' => 'Update pemasukan',
-                'subject_type' => Pemasukan::class,
-                'subject_id' => $pemasukan->id,
-                'meta' => ['nama_pemasukan' => $pemasukan->nama_pemasukan, 'nominal' => (int) $pemasukan->nominal],
-                'ip_address' => $request->ip(),
-            ]);
-
-            return redirect()
-                ->route('pemasukan.index')
-                ->with('toast', ['type' => 'success', 'message' => 'Pemasukan untuk tanggal ini sudah ada, jadi datanya diperbarui.']);
-        }
 
         $pemasukan = Pemasukan::create($data);
 
