@@ -30,7 +30,7 @@ class DashboardController extends Controller
 
         $totalPengeluaran = $totalPengeluaranManual + $totalPengeluaranBarang + $totalGajiDibayar;
         $totalKeuntungan = $totalPemasukan - $totalPengeluaran;
-        $saldoAkhir = $totalModal + $totalPemasukan - $totalPengeluaran;
+        $saldoAkhir = $totalPemasukan;
 
         $jumlahKaryawan = (int) Karyawan::query()->count();
 
