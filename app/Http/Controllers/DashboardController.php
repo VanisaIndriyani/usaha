@@ -31,6 +31,9 @@ class DashboardController extends Controller
 
         $jumlahKaryawan = (int) Karyawan::query()->count();
 
+        $saldoBri = (int) preg_replace('/\D+/', '', (string) $request->query('saldo_bri', ''));
+        $selisihSaldo = $saldoBri > 0 ? ($saldoBri - $saldoAkhir) : null;
+
         $monthlyIncome = $this->monthlySum(Pemasukan::query(), 'tanggal', 'nominal', $year);
         $monthlyExpenseManual = $this->monthlySum(Pengeluaran::query(), 'tanggal', 'nominal', $year);
         $monthlyExpenseGaji = $this->monthlySum(Gaji::query()->where('status', 'dibayar'), 'tanggal_bayar', 'nominal', $year);
@@ -68,6 +71,8 @@ class DashboardController extends Controller
                 'totalPengeluaran' => $totalPengeluaran,
                 'totalKeuntungan' => $totalKeuntungan,
                 'saldoAkhir' => $saldoAkhir,
+                'saldoBri' => $saldoBri > 0 ? $saldoBri : null,
+                'selisihSaldo' => $selisihSaldo,
                 'jumlahKaryawan' => $jumlahKaryawan,
             ],
             'charts' => [

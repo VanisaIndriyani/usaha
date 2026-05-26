@@ -8,6 +8,7 @@
             <div class="flex items-center gap-2">
                 <form method="GET" action="{{ route('dashboard') }}" class="flex items-center gap-2">
                     <input name="year" value="{{ $year }}" class="input w-28" />
+                    <input name="saldo_bri" value="{{ request('saldo_bri') }}" placeholder="Saldo BRI..." class="input w-44" />
                     <button class="btn-ghost" type="submit">Terapkan</button>
                 </form>
             </div>
@@ -59,6 +60,15 @@
                             <div class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy dark:text-white">{{ $idr($kpi['saldoAkhir']) }}</div>
                         </div>
                     </div>
+                    @if (!is_null($kpi['saldoBri']))
+                        <div class="glass-card">
+                            <div class="card-body">
+                                <div class="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/55">Selisih vs BRI</div>
+                                <div class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy dark:text-white">{{ $idr((int) $kpi['selisihSaldo']) }}</div>
+                                <div class="mt-1 text-xs text-black/45 dark:text-white/55">Saldo BRI: {{ $idr((int) $kpi['saldoBri']) }}</div>
+                            </div>
+                        </div>
+                    @endif
                     <div class="glass-card">
                         <div class="card-body">
                             <div class="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/55">Jumlah Karyawan</div>
