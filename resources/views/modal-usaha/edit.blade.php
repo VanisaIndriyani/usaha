@@ -31,15 +31,6 @@
                 </div>
 
                 <div>
-                    <x-input-label for="akun" value="Akun" />
-                    <select id="akun" name="akun" class="input mt-1">
-                        <option value="BRI" @selected(old('akun', $modalUsaha->akun ?? 'BRI') === 'BRI')>BRI</option>
-                        <option value="Cash" @selected(old('akun', $modalUsaha->akun ?? 'BRI') === 'Cash')>Cash</option>
-                    </select>
-                    <x-input-error class="mt-2" :messages="$errors->get('akun')" />
-                </div>
-
-                <div>
                     <x-input-label for="nominal" value="Nominal Modal" />
                     <x-text-input id="nominal" name="nominal" type="text" inputmode="numeric" data-money class="mt-1 block w-full" :value="old('nominal', $modalUsaha->nominal)" required />
                     <x-input-error class="mt-2" :messages="$errors->get('nominal')" />

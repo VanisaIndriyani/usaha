@@ -18,9 +18,9 @@ class DashboardController extends Controller
     {
         $year = (int) ($request->integer('year') ?: now()->year);
 
-        $totalModal = (int) ModalUsaha::query()->where('akun', 'BRI')->sum('nominal');
-        $totalPemasukan = (int) Pemasukan::query()->where('akun', 'BRI')->sum('nominal');
-        $totalPengeluaranManual = (int) Pengeluaran::query()->where('akun', 'BRI')->sum('nominal');
+        $totalModal = (int) ModalUsaha::query()->sum('nominal');
+        $totalPemasukan = (int) Pemasukan::query()->sum('nominal');
+        $totalPengeluaranManual = (int) Pengeluaran::query()->sum('nominal');
         $totalGajiDibayar = (int) Gaji::query()
             ->where('status', 'dibayar')
             ->sum('nominal');
@@ -31,8 +31,8 @@ class DashboardController extends Controller
 
         $jumlahKaryawan = (int) Karyawan::query()->count();
 
-        $monthlyIncome = $this->monthlySum(Pemasukan::query()->where('akun', 'BRI'), 'tanggal', 'nominal', $year);
-        $monthlyExpenseManual = $this->monthlySum(Pengeluaran::query()->where('akun', 'BRI'), 'tanggal', 'nominal', $year);
+        $monthlyIncome = $this->monthlySum(Pemasukan::query(), 'tanggal', 'nominal', $year);
+        $monthlyExpenseManual = $this->monthlySum(Pengeluaran::query(), 'tanggal', 'nominal', $year);
         $monthlyExpenseGaji = $this->monthlySum(Gaji::query()->where('status', 'dibayar'), 'tanggal_bayar', 'nominal', $year);
 
         $monthlyExpenseTotal = [];
@@ -46,7 +46,6 @@ class DashboardController extends Controller
         $pieExpense = Pengeluaran::query()
             ->select('kategori')
             ->selectRaw('SUM(nominal) as total')
-            ->where('akun', 'BRI')
             ->whereYear('tanggal', $year)
             ->groupBy('kategori')
             ->orderByDesc('total')

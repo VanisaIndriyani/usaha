@@ -30,15 +30,6 @@
                 </div>
 
                 <div>
-                    <x-input-label for="akun" value="Akun" />
-                    <select id="akun" name="akun" class="input mt-1">
-                        <option value="BRI" @selected(old('akun', $pengeluaran->akun ?? 'BRI') === 'BRI')>BRI</option>
-                        <option value="Cash" @selected(old('akun', $pengeluaran->akun ?? 'BRI') === 'Cash')>Cash</option>
-                    </select>
-                    <x-input-error class="mt-2" :messages="$errors->get('akun')" />
-                </div>
-
-                <div>
                     <x-input-label for="nama_pengeluaran" value="Nama Pengeluaran" />
                     <x-text-input id="nama_pengeluaran" name="nama_pengeluaran" type="text" class="mt-1 block w-full" :value="old('nama_pengeluaran', $pengeluaran->nama_pengeluaran)" required />
                     <x-input-error class="mt-2" :messages="$errors->get('nama_pengeluaran')" />

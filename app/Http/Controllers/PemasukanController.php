@@ -12,11 +12,6 @@ use Illuminate\View\View;
 
 class PemasukanController extends Controller
 {
-    private const AKUN = [
-        'BRI',
-        'Cash',
-    ];
-
     /**
      * Display a listing of the resource.
      */
@@ -95,7 +90,6 @@ class PemasukanController extends Controller
 
         $data = $request->validate([
             'tanggal' => ['required', 'date'],
-            'akun' => ['required', 'string', 'in:'.implode(',', self::AKUN)],
             'nama_pemasukan' => ['required', 'string', 'max:255'],
             'nominal' => ['required', 'integer', 'min:1'],
             'catatan' => ['nullable', 'string'],
@@ -155,7 +149,6 @@ class PemasukanController extends Controller
 
         $data = $request->validate([
             'tanggal' => ['required', 'date'],
-            'akun' => ['required', 'string', 'in:'.implode(',', self::AKUN)],
             'nama_pemasukan' => ['required', 'string', 'max:255'],
             'nominal' => ['required', 'integer', 'min:1'],
             'catatan' => ['nullable', 'string'],

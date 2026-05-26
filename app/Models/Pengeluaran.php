@@ -14,7 +14,6 @@ class Pengeluaran extends Model
         'nominal',
         'kategori',
         'tanggal',
-        'akun',
         'catatan',
         'created_by',
     ];

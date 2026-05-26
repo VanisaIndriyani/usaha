@@ -13,7 +13,6 @@ class ModalUsaha extends Model
         'owner_id',
         'nominal',
         'tanggal',
-        'akun',
         'catatan',
         'created_by',
     ];
