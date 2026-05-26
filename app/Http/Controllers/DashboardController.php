@@ -18,12 +18,11 @@ class DashboardController extends Controller
     {
         $year = (int) ($request->integer('year') ?: now()->year);
 
-        $totalModal = (int) ModalUsaha::query()->where('akun', 'BRI')->whereYear('tanggal', $year)->sum('nominal');
-        $totalPemasukan = (int) Pemasukan::query()->where('akun', 'BRI')->whereYear('tanggal', $year)->sum('nominal');
-        $totalPengeluaranManual = (int) Pengeluaran::query()->where('akun', 'BRI')->whereYear('tanggal', $year)->sum('nominal');
+        $totalModal = (int) ModalUsaha::query()->where('akun', 'BRI')->sum('nominal');
+        $totalPemasukan = (int) Pemasukan::query()->where('akun', 'BRI')->sum('nominal');
+        $totalPengeluaranManual = (int) Pengeluaran::query()->where('akun', 'BRI')->sum('nominal');
         $totalGajiDibayar = (int) Gaji::query()
             ->where('status', 'dibayar')
-            ->whereYear('tanggal_bayar', $year)
             ->sum('nominal');
 
         $totalPengeluaran = $totalPengeluaranManual + $totalGajiDibayar;
