@@ -72,6 +72,7 @@
                             <th>Tanggal</th>
                             <th>Nama</th>
                             <th>Kategori</th>
+                            <th>Akun</th>
                             <th>Nominal</th>
                             <th>Catatan</th>
                             <th class="text-right">Aksi</th>
@@ -83,6 +84,7 @@
                                 <td>{{ $row->tanggal?->format('d M Y') }}</td>
                                 <td class="font-bold">{{ $row->nama_pengeluaran }}</td>
                                 <td><span class="badge-gold">{{ $row->kategori }}</span></td>
+                                <td><span class="badge-gold">{{ $row->akun ?? 'BRI' }}</span></td>
                                 <td class="font-bold text-brand-blue dark:text-brand-gold">{{ $idr((int) $row->nominal) }}</td>
                                 <td class="text-black/55 dark:text-white/60">{{ $row->catatan }}</td>
                                 <td class="text-right">
@@ -98,7 +100,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-4 py-10 text-center text-sm text-black/50 dark:text-white/60">
+                                <td colspan="7" class="px-4 py-10 text-center text-sm text-black/50 dark:text-white/60">
                                     Belum ada data pengeluaran.
                                 </td>
                             </tr>
@@ -146,4 +148,3 @@
         });
     </script>
 </x-app-layout>
-

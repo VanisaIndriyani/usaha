@@ -17,6 +17,14 @@
                         <x-text-input id="tanggal" name="tanggal" type="date" class="mt-1 block w-full" :value="old('tanggal', now()->toDateString())" required />
                         <x-input-error class="mt-2" :messages="$errors->get('tanggal')" />
                     </div>
+                    <div>
+                        <x-input-label for="akun" value="Akun" />
+                        <select id="akun" name="akun" class="input mt-1">
+                            <option value="BRI" @selected(old('akun', 'BRI') === 'BRI')>BRI</option>
+                            <option value="Cash" @selected(old('akun', 'BRI') === 'Cash')>Cash</option>
+                        </select>
+                        <x-input-error class="mt-2" :messages="$errors->get('akun')" />
+                    </div>
                 </div>
 
                 <div>

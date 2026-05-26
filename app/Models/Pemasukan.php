@@ -11,6 +11,7 @@ class Pemasukan extends Model
 
     protected $fillable = [
         'tanggal',
+        'akun',
         'nama_pemasukan',
         'nominal',
         'catatan',

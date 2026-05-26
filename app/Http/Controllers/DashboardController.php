@@ -18,9 +18,9 @@ class DashboardController extends Controller
     {
         $year = (int) ($request->integer('year') ?: now()->year);
 
-        $totalModal = (int) ModalUsaha::query()->whereYear('tanggal', $year)->sum('nominal');
-        $totalPemasukan = (int) Pemasukan::query()->whereYear('tanggal', $year)->sum('nominal');
-        $totalPengeluaranManual = (int) Pengeluaran::query()->whereYear('tanggal', $year)->sum('nominal');
+        $totalModal = (int) ModalUsaha::query()->where('akun', 'BRI')->whereYear('tanggal', $year)->sum('nominal');
+        $totalPemasukan = (int) Pemasukan::query()->where('akun', 'BRI')->whereYear('tanggal', $year)->sum('nominal');
+        $totalPengeluaranManual = (int) Pengeluaran::query()->where('akun', 'BRI')->whereYear('tanggal', $year)->sum('nominal');
         $totalGajiDibayar = (int) Gaji::query()
             ->where('status', 'dibayar')
             ->whereYear('tanggal_bayar', $year)
@@ -28,13 +28,12 @@ class DashboardController extends Controller
 
         $totalPengeluaran = $totalPengeluaranManual + $totalGajiDibayar;
         $totalKeuntungan = $totalPemasukan - $totalPengeluaran;
-        $sisaModal = max(0, $totalModal - $totalPengeluaran);
-        $saldoAkhir = $sisaModal + $totalPemasukan;
+        $saldoAkhir = $totalModal + $totalPemasukan - $totalPengeluaran;
 
         $jumlahKaryawan = (int) Karyawan::query()->count();
 
-        $monthlyIncome = $this->monthlySum(Pemasukan::query(), 'tanggal', 'nominal', $year);
-        $monthlyExpenseManual = $this->monthlySum(Pengeluaran::query(), 'tanggal', 'nominal', $year);
+        $monthlyIncome = $this->monthlySum(Pemasukan::query()->where('akun', 'BRI'), 'tanggal', 'nominal', $year);
+        $monthlyExpenseManual = $this->monthlySum(Pengeluaran::query()->where('akun', 'BRI'), 'tanggal', 'nominal', $year);
         $monthlyExpenseGaji = $this->monthlySum(Gaji::query()->where('status', 'dibayar'), 'tanggal_bayar', 'nominal', $year);
 
         $monthlyExpenseTotal = [];
@@ -48,6 +47,7 @@ class DashboardController extends Controller
         $pieExpense = Pengeluaran::query()
             ->select('kategori')
             ->selectRaw('SUM(nominal) as total')
+            ->where('akun', 'BRI')
             ->whereYear('tanggal', $year)
             ->groupBy('kategori')
             ->orderByDesc('total')

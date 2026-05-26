@@ -11,6 +11,11 @@ use Illuminate\View\View;
 
 class PengeluaranController extends Controller
 {
+    private const AKUN = [
+        'BRI',
+        'Cash',
+    ];
+
     private const KATEGORI = [
         'Operasional',
         'Bahan baku',
@@ -104,6 +109,7 @@ class PengeluaranController extends Controller
             'nominal' => ['required', 'integer', 'min:1'],
             'kategori' => ['required', 'string', 'in:'.implode(',', self::KATEGORI)],
             'tanggal' => ['required', 'date'],
+            'akun' => ['required', 'string', 'in:'.implode(',', self::AKUN)],
             'catatan' => ['nullable', 'string'],
         ]);
 
@@ -157,6 +163,7 @@ class PengeluaranController extends Controller
             'nominal' => ['required', 'integer', 'min:1'],
             'kategori' => ['required', 'string', 'in:'.implode(',', self::KATEGORI)],
             'tanggal' => ['required', 'date'],
+            'akun' => ['required', 'string', 'in:'.implode(',', self::AKUN)],
             'catatan' => ['nullable', 'string'],
         ]);
 

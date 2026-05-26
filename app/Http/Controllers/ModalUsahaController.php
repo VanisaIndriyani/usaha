@@ -11,6 +11,11 @@ use Illuminate\View\View;
 
 class ModalUsahaController extends Controller
 {
+    private const AKUN = [
+        'BRI',
+        'Cash',
+    ];
+
     /**
      * Display a listing of the resource.
      */
@@ -81,6 +86,7 @@ class ModalUsahaController extends Controller
             'owner_id' => ['required', 'exists:owners,id'],
             'nominal' => ['required', 'integer', 'min:1'],
             'tanggal' => ['required', 'date'],
+            'akun' => ['required', 'string', 'in:'.implode(',', self::AKUN)],
             'catatan' => ['nullable', 'string'],
         ]);
 
@@ -134,6 +140,7 @@ class ModalUsahaController extends Controller
             'owner_id' => ['required', 'exists:owners,id'],
             'nominal' => ['required', 'integer', 'min:1'],
             'tanggal' => ['required', 'date'],
+            'akun' => ['required', 'string', 'in:'.implode(',', self::AKUN)],
             'catatan' => ['nullable', 'string'],
         ]);
 
