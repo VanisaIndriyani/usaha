@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use App\Models\UtangOperasional;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,8 @@ class UangKasirSeeder extends Seeder
      */
     public function run(): void
     {
+        $user = User::first();
+        
         UtangOperasional::create([
             'pihak' => 'kasir',
             'deskripsi' => 'Uang kasir awal',
@@ -19,6 +22,7 @@ class UangKasirSeeder extends Seeder
             'tanggal' => now(),
             'status' => 'belum_bayar',
             'sumber' => 'saldo_usaha',
+            'created_by' => $user?->id,
         ]);
     }
 }
