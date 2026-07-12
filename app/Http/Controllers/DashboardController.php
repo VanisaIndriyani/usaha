@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
+use App\Models\CatatanStok;
 use App\Models\Gaji;
 use App\Models\Karyawan;
 use App\Models\ModalUsaha;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
+use App\Models\UtangOperasional;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -24,24 +27,40 @@ class DashboardController extends Controller
         $totalGajiDibayar = (int) Gaji::query()
             ->where('status', 'dibayar')
             ->sum('nominal');
+        $totalPembelianStokSaldo = 0;
+        if (Schema::hasTable('catatan_stok')) {
+            $totalPembelianStokSaldo = (int) CatatanStok::query()
+                ->where('jenis', 'Pembelian')
+                ->where('sumber_dana', 'saldo_usaha')
+                ->sum('nominal');
+        }
 
-        $totalPengeluaran = $totalPengeluaranManual + $totalGajiDibayar;
+        $totalPengeluaran = $totalPengeluaranManual + $totalGajiDibayar + $totalPembelianStokSaldo;
         $totalKeuntungan = $totalPemasukan - $totalPengeluaran;
         $saldoAkhir = $totalModal + $totalPemasukan - $totalPengeluaran;
 
         $jumlahKaryawan = (int) Karyawan::query()->count();
-
-        $saldoBri = (int) preg_replace('/\D+/', '', (string) $request->query('saldo_bri', ''));
-        $selisihSaldo = $saldoBri > 0 ? ($saldoBri - $saldoAkhir) : null;
+        $utangOwner = $this->sumUtangByPihak('owner');
+        $utangKasir = $this->sumUtangByPihak('kasir');
+        $totalUtang = $utangOwner + $utangKasir;
 
         $monthlyIncome = $this->monthlySum(Pemasukan::query(), 'tanggal', 'nominal', $year);
         $monthlyExpenseManual = $this->monthlySum(Pengeluaran::query(), 'tanggal', 'nominal', $year);
         $monthlyExpenseGaji = $this->monthlySum(Gaji::query()->where('status', 'dibayar'), 'tanggal_bayar', 'nominal', $year);
+        $monthlyExpenseStok = array_fill(1, 12, 0);
+        if (Schema::hasTable('catatan_stok')) {
+            $monthlyExpenseStok = $this->monthlySum(
+                CatatanStok::query()->where('jenis', 'Pembelian')->where('sumber_dana', 'saldo_usaha'),
+                'tanggal',
+                'nominal',
+                $year
+            );
+        }
 
         $monthlyExpenseTotal = [];
         $monthlyProfit = [];
         for ($m = 1; $m <= 12; $m++) {
-            $expense = ($monthlyExpenseManual[$m] ?? 0) + ($monthlyExpenseGaji[$m] ?? 0);
+            $expense = ($monthlyExpenseManual[$m] ?? 0) + ($monthlyExpenseGaji[$m] ?? 0) + ($monthlyExpenseStok[$m] ?? 0);
             $monthlyExpenseTotal[$m] = $expense;
             $monthlyProfit[$m] = ($monthlyIncome[$m] ?? 0) - $expense;
         }
@@ -71,9 +90,11 @@ class DashboardController extends Controller
                 'totalPengeluaran' => $totalPengeluaran,
                 'totalKeuntungan' => $totalKeuntungan,
                 'saldoAkhir' => $saldoAkhir,
-                'saldoBri' => $saldoBri > 0 ? $saldoBri : null,
-                'selisihSaldo' => $selisihSaldo,
+                'saldoBri' => $saldoAkhir,
                 'jumlahKaryawan' => $jumlahKaryawan,
+                'utangOwner' => $utangOwner,
+                'utangKasir' => $utangKasir,
+                'totalUtang' => $totalUtang,
             ],
             'charts' => [
                 'months' => collect(range(1, 12))->map(fn ($m) => Carbon::createFromDate($year, $m, 1)->format('M'))->all(),
@@ -120,5 +141,17 @@ class DashboardController extends Controller
         }
 
         return $out;
+    }
+
+    private function sumUtangByPihak(string $pihak): int
+    {
+        if (! Schema::hasTable('utang_operasional')) {
+            return 0;
+        }
+
+        return (int) UtangOperasional::query()
+            ->where('pihak', $pihak)
+            ->where('status', 'belum_lunas')
+            ->sum('nominal');
     }
 }

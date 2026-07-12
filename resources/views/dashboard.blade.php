@@ -6,12 +6,15 @@
                 <div class="text-xl font-bold tracking-tight text-brand-navy dark:text-white">Dashboard</div>
             </div>
             <div class="flex items-center gap-2">
-                <form method="GET" action="{{ route('dashboard') }}" class="flex items-center gap-2">
-                    <input name="year" value="{{ $year }}" class="input w-28" />
-                    <input name="saldo_bri" value="{{ request('saldo_bri') }}" placeholder="Saldo BRI..." class="input w-44" />
-                    <button class="btn-ghost" type="submit">Terapkan</button>
-                </form>
-            </div>
+                        <form method="GET" action="{{ route('dashboard') }}" class="flex items-center gap-2">
+                            <select name="year" class="input w-32">
+                                @for($y = now()->year - 5; $y <= now()->year + 1; $y++)
+                                    <option value="{{ $y }}" @selected($y == $year)>{{ $y }}</option>
+                                @endfor
+                            </select>
+                            <button class="btn-ghost" type="submit">Terapkan</button>
+                        </form>
+                    </div>
         </div>
     </x-slot>
 
@@ -38,7 +41,7 @@
                     </div>
                     <div class="glass-card">
                         <div class="card-body">
-                            <div class="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/55">Total Pemasukan</div>
+                            <div class="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/55">Pemasukan Kotor</div>
                             <div class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy dark:text-white">{{ $idr($kpi['totalPemasukan']) }}</div>
                         </div>
                     </div>
@@ -60,15 +63,33 @@
                             <div class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy dark:text-white">{{ $idr($kpi['saldoAkhir']) }}</div>
                         </div>
                     </div>
-                    @if (!is_null($kpi['saldoBri']))
-                        <div class="glass-card">
-                            <div class="card-body">
-                                <div class="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/55">Selisih vs BRI</div>
-                                <div class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy dark:text-white">{{ $idr((int) $kpi['selisihSaldo']) }}</div>
-                                <div class="mt-1 text-xs text-black/45 dark:text-white/55">Saldo BRI: {{ $idr((int) $kpi['saldoBri']) }}</div>
+                    <div class="glass-card">
+                        <div class="card-body">
+                            <div class="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/55">Utang Owner</div>
+                            <div class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy dark:text-white">{{ $idr($kpi['utangOwner']) }}</div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="card-body">
+                            <div class="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/55">Utang Kasir</div>
+                            <div class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy dark:text-white">{{ $idr($kpi['utangKasir']) }}</div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="card-body">
+                            <div class="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/55">Total Utang</div>
+                            <div class="mt-1 text-2xl font-extrabold tracking-tight text-amber-600">{{ $idr($kpi['totalUtang']) }}</div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="card-body">
+                            <div class="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/55">Saldo Usaha BRI</div>
+                            <div class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy dark:text-white">{{ $idr((int) $kpi['saldoBri']) }}</div>
+                            <div class="mt-1 text-xs text-black/45 dark:text-white/55">
+                                Otomatis dari modal + pemasukan kotor - pengeluaran.
                             </div>
                         </div>
-                    @endif
+                    </div>
                     <div class="glass-card">
                         <div class="card-body">
                             <div class="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/55">Jumlah Karyawan</div>
@@ -98,12 +119,12 @@
             <div class="card-header">
                 <div>
                     <div class="text-sm font-semibold text-black/55 dark:text-white/60">Grafik</div>
-                    <div class="text-lg font-bold tracking-tight text-brand-navy dark:text-white">Pemasukan vs Pengeluaran</div>
+                    <div class="text-lg font-bold tracking-tight text-brand-navy dark:text-white">Pemasukan Per Bulan</div>
                 </div>
                 <span class="badge-gold">Bulanan</span>
             </div>
             <div class="card-body">
-                <div id="incomeExpenseChart" class="h-80"></div>
+                <div id="incomeChart" class="h-80"></div>
             </div>
         </div>
 
@@ -137,61 +158,38 @@
         </div>
     </div>
 
-    <div class="mt-4 grid grid-cols-1 gap-4">
-        <div class="glass-card">
-            <div class="card-header">
-                <div>
-                    <div class="text-sm font-semibold text-black/55 dark:text-white/60">Grafik</div>
-                    <div class="text-lg font-bold tracking-tight text-brand-navy dark:text-white">Laba Rugi</div>
-                </div>
-                <span class="badge-gold">Bulanan</span>
-            </div>
-            <div class="card-body">
-                <div id="profitChart" class="h-80"></div>
-            </div>
-        </div>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const months = @json($charts['months']);
             const income = @json($charts['income']);
-            const expense = @json($charts['expense']);
-            const profit = @json($charts['profit']);
             const pie = @json($charts['pieExpense']);
 
             const base = {
                 chart: { toolbar: { show: false }, fontFamily: 'Inter, ui-sans-serif, system-ui' },
-                grid: { borderColor: 'rgba(0,0,0,0.05)' },
+                grid: { borderColor: 'rgba(0,0,0,0.08)' },
                 stroke: { curve: 'smooth', width: 3 },
                 dataLabels: { enabled: false },
                 theme: { mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light' },
+                legend: { 
+                    show: true, 
+                    fontSize: '14px', 
+                    fontWeight: 600,
+                    labels: { useSeriesColors: true } 
+                },
+                xaxis: { labels: { style: { fontSize: '12px', fontWeight: 500 } } },
+                yaxis: { labels: { style: { fontSize: '12px', fontWeight: 500 } } },
             };
 
-            const incomeExpense = new ApexCharts(document.querySelector('#incomeExpenseChart'), {
+            const incomeChart = new ApexCharts(document.querySelector('#incomeChart'), {
                 ...base,
-                chart: { ...base.chart, type: 'area', height: 320 },
-                colors: ['#1E3A8A', '#FACC15'],
-                series: [
-                    { name: 'Pemasukan', data: income },
-                    { name: 'Pengeluaran', data: expense },
-                ],
-                xaxis: { categories: months },
-                fill: { type: 'gradient', gradient: { opacityFrom: 0.35, opacityTo: 0.05 } },
-                tooltip: { y: { formatter: (v) => 'Rp ' + new Intl.NumberFormat('id-ID').format(v) } },
-            });
-            incomeExpense.render();
-
-            const profitChart = new ApexCharts(document.querySelector('#profitChart'), {
-                ...base,
-                chart: { ...base.chart, type: 'bar', height: 320 },
+                chart: { ...base.chart, type: 'bar', height: 380 },
                 colors: ['#1E3A8A'],
-                series: [{ name: 'Laba/Rugi', data: profit }],
+                series: [{ name: 'Pemasukan', data: income }],
                 xaxis: { categories: months },
                 plotOptions: { bar: { borderRadius: 10, columnWidth: '55%' } },
                 tooltip: { y: { formatter: (v) => 'Rp ' + new Intl.NumberFormat('id-ID').format(v) } },
             });
-            profitChart.render();
+            incomeChart.render();
 
             const pieChart = new ApexCharts(document.querySelector('#expensePie'), {
                 ...base,

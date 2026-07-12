@@ -7,6 +7,7 @@ use App\Models\Pengeluaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PengeluaranController extends Controller
@@ -105,10 +106,16 @@ class PengeluaranController extends Controller
             'kategori' => ['required', 'string', 'in:'.implode(',', self::KATEGORI)],
             'tanggal' => ['required', 'date'],
             'catatan' => ['nullable', 'string'],
+            'bukti' => ['nullable', 'image', 'max:4096'],
         ]);
 
         $data['created_by'] = Auth::id();
-        $pengeluaran = Pengeluaran::create($data);
+
+        if ($request->hasFile('bukti')) {
+            $data['bukti_path'] = $request->file('bukti')->store('pengeluaran', 'public');
+        }
+
+        $pengeluaran = Pengeluaran::create(collect($data)->except('bukti')->all());
 
         ActivityLog::create([
             'user_id' => Auth::id(),
@@ -127,9 +134,9 @@ class PengeluaranController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Pengeluaran $pengeluaran)
+    public function show(Pengeluaran $pengeluaran): View
     {
-        return redirect()->route('pengeluaran.edit', $pengeluaran);
+        return view('pengeluaran.show', compact('pengeluaran'));
     }
 
     /**
@@ -158,9 +165,18 @@ class PengeluaranController extends Controller
             'kategori' => ['required', 'string', 'in:'.implode(',', self::KATEGORI)],
             'tanggal' => ['required', 'date'],
             'catatan' => ['nullable', 'string'],
+            'bukti' => ['nullable', 'image', 'max:4096'],
         ]);
 
-        $pengeluaran->update($data);
+        if ($request->hasFile('bukti')) {
+            $path = $request->file('bukti')->store('pengeluaran', 'public');
+            if ($pengeluaran->bukti_path) {
+                Storage::disk('public')->delete($pengeluaran->bukti_path);
+            }
+            $data['bukti_path'] = $path;
+        }
+
+        $pengeluaran->update(collect($data)->except('bukti')->all());
 
         ActivityLog::create([
             'user_id' => Auth::id(),
@@ -182,6 +198,9 @@ class PengeluaranController extends Controller
     public function destroy(Pengeluaran $pengeluaran)
     {
         $id = $pengeluaran->id;
+        if ($pengeluaran->bukti_path) {
+            Storage::disk('public')->delete($pengeluaran->bukti_path);
+        }
         $pengeluaran->delete();
 
         ActivityLog::create([

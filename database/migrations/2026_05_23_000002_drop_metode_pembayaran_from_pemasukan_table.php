@@ -8,16 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('pemasukan', function (Blueprint $table) {
-            $table->dropColumn('metode_pembayaran');
-        });
+        if (Schema::hasColumn('pemasukan', 'metode_pembayaran')) {
+            Schema::table('pemasukan', function (Blueprint $table) {
+                $table->dropColumn('metode_pembayaran');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('pemasukan', function (Blueprint $table) {
-            $table->string('metode_pembayaran')->after('nominal');
-        });
+        if (! Schema::hasColumn('pemasukan', 'metode_pembayaran')) {
+            Schema::table('pemasukan', function (Blueprint $table) {
+                $table->string('metode_pembayaran')->after('nominal');
+            });
+        }
     }
 };
-

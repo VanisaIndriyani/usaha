@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div>
             <div class="text-sm font-semibold text-black/55 dark:text-white/60">Keuangan</div>
-            <div class="text-xl font-bold tracking-tight text-brand-navy dark:text-white">Tambah Pemasukan</div>
+            <div class="text-xl font-bold tracking-tight text-brand-navy dark:text-white">Tambah Pemasukan Kotor</div>
         </div>
     </x-slot>
 
@@ -20,13 +20,13 @@
                 </div>
 
                 <div>
-                    <x-input-label for="nama_pemasukan" value="Nama Pemasukan" />
+                    <x-input-label for="nama_pemasukan" value="Nama Pemasukan Kotor" />
                     <x-text-input id="nama_pemasukan" name="nama_pemasukan" type="text" class="mt-1 block w-full" :value="old('nama_pemasukan')" required />
                     <x-input-error class="mt-2" :messages="$errors->get('nama_pemasukan')" />
                 </div>
 
                 <div>
-                    <x-input-label for="nominal" value="Nominal" />
+                    <x-input-label for="nominal" value="Nominal Pemasukan Kotor" />
                     <x-text-input id="nominal" name="nominal" type="text" inputmode="numeric" data-money class="mt-1 block w-full" :value="old('nominal')" required />
                     <x-input-error class="mt-2" :messages="$errors->get('nominal')" />
                 </div>

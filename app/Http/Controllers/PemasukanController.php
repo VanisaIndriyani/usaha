@@ -123,9 +123,9 @@ class PemasukanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Pemasukan $pemasukan)
+    public function show(Pemasukan $pemasukan): View
     {
-        return redirect()->route('pemasukan.edit', $pemasukan);
+        return view('pemasukan.show', compact('pemasukan'));
     }
 
     /**

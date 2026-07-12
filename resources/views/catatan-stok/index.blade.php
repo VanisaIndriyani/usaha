@@ -32,6 +32,9 @@
             <span class="badge-gold">{{ $catatan->total() }}</span>
         </div>
         <div class="card-body">
+            @php
+                $idr = fn (int $value) => 'Rp ' . number_format($value, 0, ',', '.');
+            @endphp
             <div class="table-modern">
                 <table class="w-full">
                     <thead>
@@ -41,6 +44,10 @@
                             <th>Jenis</th>
                             <th>Jumlah</th>
                             <th>Satuan</th>
+                            <th>Nominal</th>
+                            <th>Sumber Dana</th>
+                            <th>Utang</th>
+                            <th>Bukti</th>
                             <th>Catatan</th>
                             <th class="text-right">Aksi</th>
                         </tr>
@@ -53,9 +60,36 @@
                                 <td><span class="badge-gold">{{ $row->jenis }}</span></td>
                                 <td class="font-semibold">{{ number_format((float) $row->jumlah, 2, ',', '.') }}</td>
                                 <td class="text-black/55 dark:text-white/60">{{ $row->satuan }}</td>
+                                <td class="font-semibold text-brand-blue">
+                                    {{ (int) $row->nominal > 0 ? $idr((int) $row->nominal) : '-' }}
+                                </td>
+                                <td class="text-black/55 dark:text-white/60">
+                                    {{ $row->sumber_dana ? ($sumberDanaList[$row->sumber_dana] ?? $row->sumber_dana) : '-' }}
+                                </td>
+                                <td>
+                                    @if ($row->utangOperasional)
+                                        <span class="{{ $row->utangOperasional->status === 'lunas' ? 'inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700' : 'inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700' }}">
+                                            {{ $row->utangOperasional->status === 'lunas' ? 'Lunas' : 'Belum Lunas' }}
+                                        </span>
+                                    @else
+                                        <span class="text-xs text-black/40">-</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($row->bukti_path)
+                                        <a href="{{ asset('storage/' . $row->bukti_path) }}" target="_blank" rel="noopener">
+                                            <div class="h-10 w-10 overflow-hidden rounded-xl bg-brand-gray/60 ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10">
+                                                <img src="{{ asset('storage/' . $row->bukti_path) }}" alt="Bukti" class="h-full w-full object-cover" />
+                                            </div>
+                                        </a>
+                                    @else
+                                        <span class="text-xs text-black/40 dark:text-white/40">-</span>
+                                    @endif
+                                </td>
                                 <td class="text-black/55 dark:text-white/60">{{ $row->catatan }}</td>
                                 <td class="text-right">
                                     <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('catatan-stok.show', $row) }}" class="btn-ghost px-3 py-2">Detail</a>
                                         <a href="{{ route('catatan-stok.edit', $row) }}" class="btn-ghost px-3 py-2">Edit</a>
                                         <form method="POST" action="{{ route('catatan-stok.destroy', $row) }}" x-data @submit.prevent="$store.ui.confirm({title:'Hapus catatan?', text:'Catatan stok akan dihapus.'}).then(r=>{ if(r.isConfirmed) $el.submit() })">
                                             @csrf
@@ -67,7 +101,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-4 py-10 text-center text-sm text-black/50 dark:text-white/60">
+                                <td colspan="11" class="px-4 py-10 text-center text-sm text-black/50 dark:text-white/60">
                                     Belum ada catatan stok.
                                 </td>
                             </tr>
@@ -82,4 +116,3 @@
         </div>
     </div>
 </x-app-layout>
-

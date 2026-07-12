@@ -9,14 +9,25 @@
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+        <style>[x-cloak]{display:none !important;}</style>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div x-data="{ sidebarOpen: false }" class="app-shell">
+        <div
+            x-data="{
+                sidebarOpen: false,
+                sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true',
+                toggleSidebar() {
+                    this.sidebarCollapsed = !this.sidebarCollapsed;
+                    localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed ? 'true' : 'false');
+                }
+            }"
+            class="app-shell"
+        >
             @include('layouts.navigation')
 
-            <div class="lg:pl-72">
+            <div :class="sidebarCollapsed ? 'lg:pl-24' : 'lg:pl-72'" class="transition-all duration-300">
                 @isset($header)
                     <div class="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
                         <div class="glass-card">

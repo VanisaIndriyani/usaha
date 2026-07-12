@@ -8,7 +8,7 @@
 
     <div class="glass-card">
         <div class="card-body">
-            <form method="POST" action="{{ route('pengeluaran.store') }}" class="space-y-5">
+            <form method="POST" action="{{ route('pengeluaran.store') }}" enctype="multipart/form-data" class="space-y-5">
                 @csrf
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -44,6 +44,12 @@
                     <x-input-label for="catatan" value="Catatan" />
                     <textarea id="catatan" name="catatan" class="input mt-1" rows="4" placeholder="Opsional...">{{ old('catatan') }}</textarea>
                     <x-input-error class="mt-2" :messages="$errors->get('catatan')" />
+                </div>
+
+                <div>
+                    <x-input-label for="bukti" value="Upload Bukti (opsional)" />
+                    <input id="bukti" name="bukti" type="file" class="mt-1 block w-full text-sm text-black/60 file:mr-4 file:rounded-xl file:border-0 file:bg-brand-blue file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-navy dark:text-white/70 dark:file:bg-white/10 dark:file:text-white dark:hover:file:bg-white/15" accept="image/*" />
+                    <x-input-error class="mt-2" :messages="$errors->get('bukti')" />
                 </div>
 
                 <div class="flex items-center gap-2">

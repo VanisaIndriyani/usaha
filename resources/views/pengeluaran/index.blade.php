@@ -73,6 +73,7 @@
                             <th>Nama</th>
                             <th>Kategori</th>
                             <th>Nominal</th>
+                            <th>Bukti</th>
                             <th>Catatan</th>
                             <th class="text-right">Aksi</th>
                         </tr>
@@ -84,9 +85,21 @@
                                 <td class="font-bold">{{ $row->nama_pengeluaran }}</td>
                                 <td><span class="badge-gold">{{ $row->kategori }}</span></td>
                                 <td class="font-bold text-brand-blue dark:text-brand-gold">{{ $idr((int) $row->nominal) }}</td>
+                                <td>
+                                    @if ($row->bukti_path)
+                                        <a href="{{ asset('storage/' . $row->bukti_path) }}" target="_blank" rel="noopener">
+                                            <div class="h-10 w-10 overflow-hidden rounded-xl bg-brand-gray/60 ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10">
+                                                <img src="{{ asset('storage/' . $row->bukti_path) }}" alt="Bukti" class="h-full w-full object-cover" />
+                                            </div>
+                                        </a>
+                                    @else
+                                        <span class="text-xs text-black/40 dark:text-white/40">-</span>
+                                    @endif
+                                </td>
                                 <td class="text-black/55 dark:text-white/60">{{ $row->catatan }}</td>
                                 <td class="text-right">
                                     <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('pengeluaran.show', $row) }}" class="btn-ghost px-3 py-2">Detail</a>
                                         <a href="{{ route('pengeluaran.edit', $row) }}" class="btn-ghost px-3 py-2">Edit</a>
                                         <form method="POST" action="{{ route('pengeluaran.destroy', $row) }}" x-data @submit.prevent="$store.ui.confirm({title:'Hapus pengeluaran?', text:'Data pengeluaran akan dihapus.'}).then(r=>{ if(r.isConfirmed) $el.submit() })">
                                             @csrf
@@ -98,7 +111,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-4 py-10 text-center text-sm text-black/50 dark:text-white/60">
+                                <td colspan="7" class="px-4 py-10 text-center text-sm text-black/50 dark:text-white/60">
                                     Belum ada data pengeluaran.
                                 </td>
                             </tr>

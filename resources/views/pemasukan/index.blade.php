@@ -3,7 +3,7 @@
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <div class="text-sm font-semibold text-black/55 dark:text-white/60">Keuangan</div>
-                <div class="text-xl font-bold tracking-tight text-brand-navy dark:text-white">Pemasukan Harian</div>
+                <div class="text-xl font-bold tracking-tight text-brand-navy dark:text-white">Pemasukan Kotor Harian</div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <form method="GET" action="{{ route('pemasukan.index') }}" class="flex flex-wrap items-center gap-2">
@@ -27,7 +27,7 @@
             <div class="card-header">
                 <div>
                     <div class="text-sm font-semibold text-black/55 dark:text-white/60">Grafik</div>
-                    <div class="text-lg font-bold tracking-tight text-brand-navy dark:text-white">Pemasukan Bulanan</div>
+                    <div class="text-lg font-bold tracking-tight text-brand-navy dark:text-white">Pemasukan Kotor Bulanan</div>
                 </div>
                 <span class="badge-gold">{{ $chart['year'] }}</span>
             </div>
@@ -61,6 +61,9 @@
                     <div class="text-black/55 dark:text-white/60">Tahunan</div>
                     <div class="font-bold text-brand-navy dark:text-white">{{ $idr($stats['tahunan']) }}</div>
                 </div>
+                <div class="rounded-2xl bg-slate-50 px-3 py-2 text-xs text-slate-500">
+                    Saldo usaha otomatis dihitung dari pemasukan kotor dikurangi pengeluaran.
+                </div>
             </div>
         </div>
     </div>
@@ -69,7 +72,7 @@
         <div class="card-header">
             <div>
                 <div class="text-sm font-semibold text-black/55 dark:text-white/60">Data</div>
-                <div class="text-lg font-bold tracking-tight text-brand-navy dark:text-white">Transaksi Pemasukan</div>
+                <div class="text-lg font-bold tracking-tight text-brand-navy dark:text-white">Transaksi Pemasukan Kotor</div>
             </div>
             <span class="badge-gold">{{ $pemasukan->total() }}</span>
         </div>
@@ -106,6 +109,7 @@
                                 <td class="text-black/55 dark:text-white/60">{{ $row->catatan }}</td>
                                 <td class="text-right">
                                     <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('pemasukan.show', $row) }}" class="btn-ghost px-3 py-2">Detail</a>
                                         <a href="{{ route('pemasukan.edit', $row) }}" class="btn-ghost px-3 py-2">Edit</a>
                                         <form method="POST" action="{{ route('pemasukan.destroy', $row) }}" x-data @submit.prevent="$store.ui.confirm({title:'Hapus pemasukan?', text:'Data pemasukan akan dihapus.'}).then(r=>{ if(r.isConfirmed) $el.submit() })">
                                             @csrf
@@ -141,7 +145,7 @@
                 chart: { type: 'area', height: 320, toolbar: { show: false }, fontFamily: 'Inter, ui-sans-serif, system-ui' },
                 theme: { mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light' },
                 colors: ['#1E3A8A'],
-                series: [{ name: 'Pemasukan', data: series }],
+                series: [{ name: 'Pemasukan Kotor', data: series }],
                 xaxis: { categories: labels },
                 dataLabels: { enabled: false },
                 stroke: { curve: 'smooth', width: 3 },

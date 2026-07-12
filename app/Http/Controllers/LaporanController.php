@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CatatanStok;
 use App\Models\Gaji;
 use App\Models\ModalUsaha;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
 use App\Models\ProfitSharing;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class LaporanController extends Controller
@@ -20,12 +22,19 @@ class LaporanController extends Controller
         $income = (int) Pemasukan::query()->whereBetween('tanggal', [$start, $end])->sum('nominal');
         $expenseManual = (int) Pengeluaran::query()->whereBetween('tanggal', [$start, $end])->sum('nominal');
         $expenseBarang = 0;
+        if (Schema::hasTable('catatan_stok')) {
+            $expenseBarang = (int) CatatanStok::query()
+                ->where('jenis', 'Pembelian')
+                ->where('sumber_dana', 'saldo_usaha')
+                ->whereBetween('tanggal', [$start, $end])
+                ->sum('nominal');
+        }
         $expenseGaji = (int) Gaji::query()
             ->where('status', 'dibayar')
             ->whereBetween('tanggal_bayar', [$start, $end])
             ->sum('nominal');
 
-        $totalExpense = $expenseManual + $expenseGaji;
+        $totalExpense = $expenseManual + $expenseGaji + $expenseBarang;
         $profit = $income - $totalExpense;
 
         $modal = (int) ModalUsaha::query()->whereBetween('tanggal', [$start, $end])->sum('nominal');

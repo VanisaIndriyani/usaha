@@ -5,17 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Pengeluaran extends Model
+class UtangOperasional extends Model
 {
-    protected $table = 'pengeluaran';
+    protected $table = 'utang_operasional';
 
     protected $fillable = [
-        'nama_pengeluaran',
+        'pihak',
+        'sumber',
+        'deskripsi',
         'nominal',
-        'kategori',
         'tanggal',
+        'status',
+        'referensi_type',
+        'referensi_id',
         'catatan',
-        'bukti_path',
         'created_by',
     ];
 

@@ -13,15 +13,11 @@ use App\Http\Controllers\PemasukanController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\ProfitSharingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicHomeController;
+use App\Http\Controllers\UtangOperasionalController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('dashboard');
-    }
-
-    return redirect()->route('login');
-});
+Route::get('/', [PublicHomeController::class, 'index'])->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -29,6 +25,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('modal-usaha', ModalUsahaController::class)->names('modal-usaha');
     Route::resource('barang-usaha', BarangUsahaController::class)->names('barang-usaha');
     Route::resource('catatan-stok', CatatanStokController::class)->names('catatan-stok');
+    Route::get('utang-owner', [UtangOperasionalController::class, 'ownerIndex'])->name('utang-owner.index');
+    Route::get('utang-kasir', [UtangOperasionalController::class, 'kasirIndex'])->name('utang-kasir.index');
+    Route::patch('utang-operasional/{utangOperasional}/toggle-status', [UtangOperasionalController::class, 'toggleStatus'])->name('utang-operasional.toggle-status');
     Route::resource('pemasukan', PemasukanController::class)->names('pemasukan');
     Route::resource('pengeluaran', PengeluaranController::class)->names('pengeluaran');
     Route::resource('karyawan', KaryawanController::class)->names('karyawan');
