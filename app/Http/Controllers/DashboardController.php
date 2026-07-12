@@ -9,6 +9,7 @@ use App\Models\Karyawan;
 use App\Models\ModalUsaha;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
+use App\Models\Periode;
 use App\Models\UtangOperasional;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,18 +20,30 @@ class DashboardController extends Controller
 {
     public function index(Request $request): View
     {
+        $allPeriodes = Periode::latest()->get();
+        $selectedPeriodeId = $request->integer('periode');
+        $selectedPeriode = $selectedPeriodeId ? Periode::find($selectedPeriodeId) : Periode::getActivePeriod();
+        
+        // Base query builder
+        $queryBuilder = function ($model) use ($selectedPeriode) {
+            $qb = $model->newQuery();
+            if ($selectedPeriode) {
+                $qb->where('periode_id', $selectedPeriode->id);
+            }
+            return $qb;
+        };
+        
         $year = (int) ($request->integer('year') ?: now()->year);
-        $month = $request->integer('month') ?: now()->month;
 
         $totalModal = (int) ModalUsaha::query()->sum('nominal');
-        $totalPemasukan = (int) Pemasukan::query()->sum('nominal');
-        $totalPengeluaranManual = (int) Pengeluaran::query()->sum('nominal');
+        $totalPemasukan = (int) $queryBuilder(Pemasukan::query())->sum('nominal');
+        $totalPengeluaranManual = (int) $queryBuilder(Pengeluaran::query())->sum('nominal');
         $totalGajiDibayar = (int) Gaji::query()
             ->where('status', 'dibayar')
             ->sum('nominal');
         $totalPembelianStokSaldo = 0;
         if (Schema::hasTable('catatan_stok')) {
-            $totalPembelianStokSaldo = (int) CatatanStok::query()
+            $totalPembelianStokSaldo = (int) $queryBuilder(CatatanStok::query())
                 ->where('jenis', 'Pembelian')
                 ->where('sumber_dana', 'saldo_usaha')
                 ->sum('nominal');
@@ -45,13 +58,13 @@ class DashboardController extends Controller
         $utangKasir = $this->sumUtangByPihak('kasir');
         $totalUtang = $utangOwner + $utangKasir;
 
-        $monthlyIncome = $this->monthlySum(Pemasukan::query(), 'tanggal', 'nominal', $year);
-        $monthlyExpenseManual = $this->monthlySum(Pengeluaran::query(), 'tanggal', 'nominal', $year);
+        $monthlyIncome = $this->monthlySum($queryBuilder(Pemasukan::query()), 'tanggal', 'nominal', $year);
+        $monthlyExpenseManual = $this->monthlySum($queryBuilder(Pengeluaran::query()), 'tanggal', 'nominal', $year);
         $monthlyExpenseGaji = $this->monthlySum(Gaji::query()->where('status', 'dibayar'), 'tanggal_bayar', 'nominal', $year);
         $monthlyExpenseStok = array_fill(1, 12, 0);
         if (Schema::hasTable('catatan_stok')) {
             $monthlyExpenseStok = $this->monthlySum(
-                CatatanStok::query()->where('jenis', 'Pembelian')->where('sumber_dana', 'saldo_usaha'),
+                $queryBuilder(CatatanStok::query())->where('jenis', 'Pembelian')->where('sumber_dana', 'saldo_usaha'),
                 'tanggal',
                 'nominal',
                 $year
@@ -66,7 +79,7 @@ class DashboardController extends Controller
             $monthlyProfit[$m] = ($monthlyIncome[$m] ?? 0) - $expense;
         }
 
-        $pieExpense = Pengeluaran::query()
+        $pieExpense = $queryBuilder(Pengeluaran::query())
             ->select('kategori')
             ->selectRaw('SUM(nominal) as total')
             ->whereYear('tanggal', $year)
@@ -83,8 +96,12 @@ class DashboardController extends Controller
             ->limit(12)
             ->get();
 
+
+
         return view('dashboard', [
             'year' => $year,
+            'periodes' => $allPeriodes,
+            'selectedPeriode' => $selectedPeriode,
             'kpi' => [
                 'totalModal' => $totalModal,
                 'totalPemasukan' => $totalPemasukan,

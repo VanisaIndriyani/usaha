@@ -97,6 +97,11 @@ class PemasukanController extends Controller
         ]);
 
         $data['created_by'] = Auth::id();
+        
+        $activePeriode = \App\Models\Periode::getActivePeriod();
+        if ($activePeriode) {
+            $data['periode_id'] = $activePeriode->id;
+        }
 
         if ($request->hasFile('bukti')) {
             $data['bukti_path'] = $request->file('bukti')->store('pemasukan', 'public');
@@ -163,7 +168,14 @@ class PemasukanController extends Controller
             $data['bukti_path'] = $path;
         }
 
-        $pemasukan->update(collect($data)->except('bukti')->all());
+        $updateData = collect($data)->except('bukti')->all();
+        
+        $activePeriode = \App\Models\Periode::getActivePeriod();
+        if ($activePeriode) {
+            $updateData['periode_id'] = $activePeriode->id;
+        }
+
+        $pemasukan->update($updateData);
 
         ActivityLog::create([
             'user_id' => Auth::id(),

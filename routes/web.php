@@ -11,6 +11,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ModalUsahaController;
 use App\Http\Controllers\PemasukanController;
 use App\Http\Controllers\PengeluaranController;
+use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\ProfitSharingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicHomeController;
@@ -21,6 +22,9 @@ Route::get('/', [PublicHomeController::class, 'index'])->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::resource('periode', PeriodeController::class)->names('periode');
+    Route::patch('periode/{periode}/activate', [PeriodeController::class, 'activate'])->name('periode.activate');
 
     Route::resource('modal-usaha', ModalUsahaController::class)->names('modal-usaha');
     Route::resource('barang-usaha', BarangUsahaController::class)->names('barang-usaha');

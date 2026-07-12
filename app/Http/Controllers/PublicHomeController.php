@@ -16,7 +16,10 @@ class PublicHomeController extends Controller
         }
 
         return view('welcome', [
-            'publicData' => $overview->build((int) ($request->integer('year') ?: now()->year)),
+            'publicData' => $overview->build(
+                (int) ($request->integer('year') ?: now()->year),
+                $request->integer('periode') ?: null
+            ),
         ]);
     }
 }

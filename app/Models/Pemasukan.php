@@ -16,6 +16,7 @@ class Pemasukan extends Model
         'catatan',
         'bukti_path',
         'created_by',
+        'periode_id',
     ];
 
     protected $casts = [
@@ -25,5 +26,10 @@ class Pemasukan extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function periode(): BelongsTo
+    {
+        return $this->belongsTo(Periode::class);
     }
 }

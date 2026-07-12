@@ -5,6 +5,7 @@
             'title' => 'Utama',
             'items' => [
                 ['label' => 'Dashboard', 'route' => 'dashboard', 'match' => ['dashboard'], 'icon' => 'home'],
+                ['label' => 'Periode', 'route' => 'periode.index', 'match' => ['periode.*'], 'icon' => 'chart'],
             ],
         ],
         [

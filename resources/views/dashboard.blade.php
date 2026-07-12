@@ -4,26 +4,31 @@
             <div>
                 <div class="text-sm font-semibold text-black/55 dark:text-white/60">Ringkasan</div>
                 <div class="text-xl font-bold tracking-tight text-brand-navy dark:text-white">Dashboard</div>
+                @if($selectedPeriode)
+                    <div class="mt-1 text-sm font-semibold text-brand-blue dark:text-brand-gold">
+                        Periode: {{ $selectedPeriode->nama }} ({{ $selectedPeriode->tanggal_mulai->format('d/m/Y') }} - {{ $selectedPeriode->tanggal_selesai->format('d/m/Y') }})
+                    </div>
+                @else
+                    <div class="mt-1 text-sm font-semibold text-amber-600">
+                        Tidak ada periode aktif. <a href="{{ route('periode.create') }}" class="underline">Buat periode baru</a>
+                    </div>
+                @endif
             </div>
             <div class="flex items-center gap-2">
                         <form method="GET" action="{{ route('dashboard') }}" class="flex items-center gap-2">
+                            <select name="periode" class="input w-64">
+                                <option value="">Pilih Periode</option>
+                                @foreach($periodes as $periode)
+                                    <option value="{{ $periode->id }}" @selected(optional($selectedPeriode)->id == $periode->id)>
+                                        {{ $periode->nama }} ({{ $periode->tanggal_mulai->format('d/m/Y') }} - {{ $periode->tanggal_selesai->format('d/m/Y') }})
+                                    </option>
+                                @endforeach
+                            </select>
                             <select name="year" class="input w-32">
                                 @for($y = now()->year - 5; $y <= now()->year + 1; $y++)
                                     <option value="{{ $y }}" @selected($y == $year)>{{ $y }}</option>
                                 @endfor
                             </select>
-                             <select name="month" class="input w-40">
-        <option value="">Semua Bulan</option>
-        @foreach([
-            1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',
-            5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',
-            9=>'September',10=>'Oktober',11=>'November',12=>'Desember'
-        ] as $key => $value)
-            <option value="{{ $key }}" @selected($month == $key)>
-                {{ $value }}
-            </option>
-        @endforeach
-    </select>
                             <button class="btn-ghost" type="submit">Terapkan</button>
                         </form>
                     </div>
@@ -201,7 +206,15 @@
                 labels: pie.map((i) => i.label),
                 series: pie.map((i) => i.value),
                 colors: ['#0F172A', '#1E3A8A', '#FACC15', '#334155', '#64748B', '#94A3B8', '#CBD5E1', '#E2E8F0'],
-                legend: { position: 'bottom' },
+                legend: { 
+                    position: 'bottom', 
+                    fontSize: '14px', 
+                    fontWeight: 600,
+                    labels: { 
+                        colors: document.documentElement.classList.contains('dark') ? '#e2e8f0' : '#1e293b', 
+                        useSeriesColors: true 
+                    } 
+                },
                 tooltip: { y: { formatter: (v) => 'Rp ' + new Intl.NumberFormat('id-ID').format(v) } },
             });
             pieChart.render();

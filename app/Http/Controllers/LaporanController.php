@@ -7,6 +7,7 @@ use App\Models\Gaji;
 use App\Models\ModalUsaha;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
+use App\Models\Periode;
 use App\Models\ProfitSharing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -16,14 +17,24 @@ class LaporanController extends Controller
 {
     public function index(Request $request): View
     {
+        $activePeriode = Periode::getActivePeriod();
+        
         $start = $request->query('start') ?: now()->startOfMonth()->toDateString();
         $end = $request->query('end') ?: now()->endOfMonth()->toDateString();
 
-        $income = (int) Pemasukan::query()->whereBetween('tanggal', [$start, $end])->sum('nominal');
-        $expenseManual = (int) Pengeluaran::query()->whereBetween('tanggal', [$start, $end])->sum('nominal');
+        $queryBuilder = function ($model) use ($activePeriode) {
+            $qb = $model->newQuery();
+            if ($activePeriode) {
+                $qb->where('periode_id', $activePeriode->id);
+            }
+            return $qb;
+        };
+
+        $income = (int) $queryBuilder(Pemasukan::query())->whereBetween('tanggal', [$start, $end])->sum('nominal');
+        $expenseManual = (int) $queryBuilder(Pengeluaran::query())->whereBetween('tanggal', [$start, $end])->sum('nominal');
         $expenseBarang = 0;
         if (Schema::hasTable('catatan_stok')) {
-            $expenseBarang = (int) CatatanStok::query()
+            $expenseBarang = (int) $queryBuilder(CatatanStok::query())
                 ->where('jenis', 'Pembelian')
                 ->where('sumber_dana', 'saldo_usaha')
                 ->whereBetween('tanggal', [$start, $end])

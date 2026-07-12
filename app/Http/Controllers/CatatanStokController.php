@@ -74,6 +74,11 @@ class CatatanStokController extends Controller
         $data = $this->validateData($request);
 
         $data['created_by'] = Auth::id();
+        
+        $activePeriode = \App\Models\Periode::getActivePeriod();
+        if ($activePeriode) {
+            $data['periode_id'] = $activePeriode->id;
+        }
 
         if ($request->hasFile('bukti')) {
             $data['bukti_path'] = $request->file('bukti')->store('catatan-stok', 'public');
@@ -133,7 +138,14 @@ class CatatanStokController extends Controller
             $data['bukti_path'] = $path;
         }
 
-        $catatanStok->update(collect($data)->except('bukti')->all());
+        $updateData = collect($data)->except('bukti')->all();
+        
+        $activePeriode = \App\Models\Periode::getActivePeriod();
+        if ($activePeriode) {
+            $updateData['periode_id'] = $activePeriode->id;
+        }
+
+        $catatanStok->update($updateData);
         $this->syncUtangOperasional($catatanStok->fresh());
 
         ActivityLog::create([

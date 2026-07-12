@@ -9,6 +9,7 @@ use App\Models\Karyawan;
 use App\Models\ModalUsaha;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
+use App\Models\Periode;
 use App\Models\UtangOperasional;
 use Carbon\Carbon;
 use Throwable;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Schema;
 
 class PublicBusinessOverview
 {
-    public function build(?int $year = null): array
+    public function build(?int $year = null, ?int $periodeId = null): array
     {
         $year = $year ?: now()->year;
 
@@ -25,15 +26,25 @@ class PublicBusinessOverview
                 return $this->emptyState($year);
             }
 
+            $selectedPeriode = $periodeId ? Periode::find($periodeId) : Periode::getActivePeriod();
+            
+            $queryBuilder = function ($model) use ($selectedPeriode) {
+                $qb = $model->newQuery();
+                if ($selectedPeriode) {
+                    $qb->where('periode_id', $selectedPeriode->id);
+                }
+                return $qb;
+            };
+
             $totalModal = (int) ModalUsaha::query()->sum('nominal');
-            $totalPemasukan = (int) Pemasukan::query()->sum('nominal');
-            $totalPengeluaranManual = (int) Pengeluaran::query()->sum('nominal');
+            $totalPemasukan = (int) $queryBuilder(Pemasukan::query())->sum('nominal');
+            $totalPengeluaranManual = (int) $queryBuilder(Pengeluaran::query())->sum('nominal');
             $totalGajiDibayar = (int) Gaji::query()
                 ->where('status', 'dibayar')
                 ->sum('nominal');
             $totalPembelianStokSaldo = 0;
             if (Schema::hasTable('catatan_stok')) {
-                $totalPembelianStokSaldo = (int) CatatanStok::query()
+                $totalPembelianStokSaldo = (int) $queryBuilder(CatatanStok::query())
                     ->where('jenis', 'Pembelian')
                     ->where('sumber_dana', 'saldo_usaha')
                     ->sum('nominal');
@@ -46,13 +57,13 @@ class PublicBusinessOverview
             $utangKasir = $this->sumUtangByPihak('kasir');
             $totalUtang = $utangOwner + $utangKasir;
 
-            $monthlyIncome = $this->monthlySum(Pemasukan::query(), 'tanggal', 'nominal', $year);
-            $monthlyExpenseManual = $this->monthlySum(Pengeluaran::query(), 'tanggal', 'nominal', $year);
+            $monthlyIncome = $this->monthlySum($queryBuilder(Pemasukan::query()), 'tanggal', 'nominal', $year);
+            $monthlyExpenseManual = $this->monthlySum($queryBuilder(Pengeluaran::query()), 'tanggal', 'nominal', $year);
             $monthlyExpenseGaji = $this->monthlySum(Gaji::query()->where('status', 'dibayar'), 'tanggal_bayar', 'nominal', $year);
             $monthlyExpenseStok = array_fill(1, 12, 0);
             if (Schema::hasTable('catatan_stok')) {
                 $monthlyExpenseStok = $this->monthlySum(
-                    CatatanStok::query()->where('jenis', 'Pembelian')->where('sumber_dana', 'saldo_usaha'),
+                    $queryBuilder(CatatanStok::query())->where('jenis', 'Pembelian')->where('sumber_dana', 'saldo_usaha'),
                     'tanggal',
                     'nominal',
                     $year
@@ -67,7 +78,7 @@ class PublicBusinessOverview
                 $monthlyProfit[$month] = ($monthlyIncome[$month] ?? 0) - $expense;
             }
 
-            $pieExpense = Pengeluaran::query()
+            $pieExpense = $queryBuilder(Pengeluaran::query())
                 ->select('kategori')
                 ->selectRaw('SUM(nominal) as total')
                 ->whereYear('tanggal', $year)
@@ -82,7 +93,7 @@ class PublicBusinessOverview
                 ->values()
                 ->all();
 
-            $latestIncomeEntries = Pemasukan::query()
+            $latestIncomeEntries = $queryBuilder(Pemasukan::query())
                 ->selectRaw("'Pemasukan' as tipe, nama_pemasukan as nama, nominal, tanggal")
                 ->latest('tanggal')
                 ->limit(4)
@@ -96,7 +107,7 @@ class PublicBusinessOverview
                     'tanggal' => optional($row->tanggal)?->translatedFormat('d M Y') ?? '-',
                 ]);
 
-            $latestExpenseEntries = Pengeluaran::query()
+            $latestExpenseEntries = $queryBuilder(Pengeluaran::query())
                 ->selectRaw("'Pengeluaran' as tipe, nama_pengeluaran as nama, nominal, tanggal")
                 ->latest('tanggal')
                 ->limit(4)
@@ -128,6 +139,8 @@ class PublicBusinessOverview
 
         return [
             'year' => $year,
+            'periodes' => Periode::latest()->get(),
+            'selectedPeriode' => $selectedPeriode,
             'summary' => [
                 'totalModal' => $totalModal,
                 'totalPemasukan' => $totalPemasukan,
@@ -167,6 +180,8 @@ class PublicBusinessOverview
     {
         return [
             'year' => $year,
+            'periodes' => collect(),
+            'selectedPeriode' => null,
             'summary' => [
                 'totalModal' => 0,
                 'totalPemasukan' => 0,

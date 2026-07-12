@@ -28,6 +28,14 @@
                     </div>
                     <div class="flex flex-wrap items-center gap-3">
                         <form method="GET" action="{{ route('home') }}" class="flex items-center gap-2">
+                            <select name="periode" class="input w-64 border-slate-200 bg-white text-brand-navy">
+                                <option value="">Pilih Periode</option>
+                                @foreach($publicData['periodes'] as $periode)
+                                    <option value="{{ $periode->id }}" @selected(optional($publicData['selectedPeriode'])->id == $periode->id)>
+                                        {{ $periode->nama }} ({{ $periode->tanggal_mulai->format('d/m/Y') }} - {{ $periode->tanggal_selesai->format('d/m/Y') }})
+                                    </option>
+                                @endforeach
+                            </select>
                             <select name="year" class="input w-32 border-slate-200 bg-white text-brand-navy">
                                 @for($y = now()->year - 5; $y <= now()->year + 1; $y++)
                                     <option value="{{ $y }}" @selected($y == $publicData['year'])>{{ $y }}</option>
@@ -219,7 +227,12 @@
                     labels: pieLabels,
                     series: pieSeries,
                     colors: ['#1E3A8A', '#FACC15', '#334155', '#94A3B8', '#E2E8F0', '#CBD5E1'],
-                    legend: { position: 'bottom' },
+                    legend: { 
+                        position: 'bottom', 
+                        fontSize: '14px', 
+                        fontWeight: 600,
+                        labels: { colors: '#1e293b', useSeriesColors: true } 
+                    },
                     tooltip: { y: { formatter: (value) => 'Rp ' + new Intl.NumberFormat('id-ID').format(value) } },
                 }).render();
 
