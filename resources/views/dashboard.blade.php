@@ -12,6 +12,18 @@
                                     <option value="{{ $y }}" @selected($y == $year)>{{ $y }}</option>
                                 @endfor
                             </select>
+                             <select name="month" class="input w-40">
+        <option value="">Semua Bulan</option>
+        @foreach([
+            1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',
+            5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',
+            9=>'September',10=>'Oktober',11=>'November',12=>'Desember'
+        ] as $key => $value)
+            <option value="{{ $key }}" @selected($month == $key)>
+                {{ $value }}
+            </option>
+        @endforeach
+    </select>
                             <button class="btn-ghost" type="submit">Terapkan</button>
                         </form>
                     </div>
@@ -166,23 +178,15 @@
 
             const base = {
                 chart: { toolbar: { show: false }, fontFamily: 'Inter, ui-sans-serif, system-ui' },
-                grid: { borderColor: 'rgba(0,0,0,0.08)' },
+                grid: { borderColor: 'rgba(0,0,0,0.05)' },
                 stroke: { curve: 'smooth', width: 3 },
                 dataLabels: { enabled: false },
                 theme: { mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light' },
-                legend: { 
-                    show: true, 
-                    fontSize: '14px', 
-                    fontWeight: 600,
-                    labels: { useSeriesColors: true } 
-                },
-                xaxis: { labels: { style: { fontSize: '12px', fontWeight: 500 } } },
-                yaxis: { labels: { style: { fontSize: '12px', fontWeight: 500 } } },
             };
 
             const incomeChart = new ApexCharts(document.querySelector('#incomeChart'), {
                 ...base,
-                chart: { ...base.chart, type: 'bar', height: 380 },
+                chart: { ...base.chart, type: 'bar', height: 320 },
                 colors: ['#1E3A8A'],
                 series: [{ name: 'Pemasukan', data: income }],
                 xaxis: { categories: months },

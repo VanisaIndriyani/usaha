@@ -20,6 +20,7 @@ class DashboardController extends Controller
     public function index(Request $request): View
     {
         $year = (int) ($request->integer('year') ?: now()->year);
+        $month = $request->integer('month') ?: now()->month;
 
         $totalModal = (int) ModalUsaha::query()->sum('nominal');
         $totalPemasukan = (int) Pemasukan::query()->sum('nominal');
